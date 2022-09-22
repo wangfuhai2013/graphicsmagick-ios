@@ -4,7 +4,7 @@
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   Magick API common definitions support.
 */
 #ifndef _MAGICK_COMMON_H
@@ -23,7 +23,7 @@ extern "C" {
 #  define _MAGICKLIB_
 #  undef BuildMagickModules
 #  define SupportMagickModules
-#endif 
+#endif
 
 #if defined(MSWINDOWS) && !defined(__CYGWIN__)
 #  if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
@@ -53,12 +53,12 @@ extern "C" {
 #  if defined(_DLL) && !defined(_LIB)
 #    define ModuleExport  __declspec(dllexport)
 #    if defined(_VISUALC_)
-#      pragma message( "Magick module DLL export interface" ) 
+#      pragma message( "Magick module DLL export interface" )
 #    endif
 #  else
 #    define ModuleExport
 #    if defined(_VISUALC_)
-#      pragma message( "Magick module static interface" ) 
+#      pragma message( "Magick module static interface" )
 #    endif
 #  endif
 #  define MagickGlobal __declspec(thread)
@@ -201,6 +201,24 @@ extern "C" {
 #      define MAGICK_OPTIMIZE_FUNC(opt) MAGICK_ATTRIBUTE((__optimize__ (opt)))
 #    endif
   /*
+    GCC 7 and later support a fallthrough attribute to mark switch statement
+    cases which are intended to fall through.  Clang 3.5.0 supports a
+    clang::fallthrough statement attribute while Clang 10 supports the same
+    attribute as GCC 7.  Some compilers support a FALLTHROUGH (or FALLTHRU)
+    pre-processor comment.  C++ 17 supports a standard fallthrough attribute
+    of the form "[[fallthrough]]".  See
+    https://developers.redhat.com/blog/2017/03/10/wimplicit-fallthrough-in-gcc-7/,
+    https://gcc.gnu.org/onlinedocs/gcc/Statement-Attributes.html,
+    https://clang.llvm.org/docs/AttributeReference.html#fallthrough, and
+    https://releases.llvm.org/3.7.0/tools/clang/docs/AttributeReference.html#fallthrough-clang-fallthrough
+
+    Usage is to put "MAGICK_FALLTHROUGH;" where a "break;" would go.
+  */
+#    if ((MAGICK_HAS_ATTRIBUTE(__fallthrough__)) || \
+         ((__GNUC__) >= 7))  /* 7+ */
+#      define MAGICK_FALLTHROUGH MAGICK_ATTRIBUTE((__fallthrough__))
+#    endif
+  /*
     https://code.google.com/p/address-sanitizer/wiki/AddressSanitizer#Introduction
 
     To ignore certain functions, one can use the no_sanitize_address attribute
@@ -244,6 +262,12 @@ extern "C" {
 #if !defined(MAGICK_FUNC_WARN_UNUSED_RESULT)
 #  define MAGICK_FUNC_WARN_UNUSED_RESULT /*nothing*/
 #endif
+#if !defined(MAGICK_FUNC_NOINLINE)
+#  define MAGICK_FUNC_NOINLINE /*nothing*/
+#endif
+#if !defined(MAGICK_FUNC_ALWAYSINLINE)
+#  define MAGICK_FUNC_ALWAYSINLINE /*nothing*/
+#endif
 #if !defined(MAGICK_FUNC_ALLOC_SIZE_1ARG)
 #  define MAGICK_FUNC_ALLOC_SIZE_1ARG(arg_num) /*nothing*/
 #endif
@@ -256,14 +280,38 @@ extern "C" {
 #if !defined(MAGICK_FUNC_COLD)
 #  define MAGICK_FUNC_COLD  /*nothing*/
 #endif
+#if !defined(MAGICK_OPTIMIZE_FUNC)
+#  define MAGICK_OPTIMIZE_FUNC(opt) /*nothing*/
+#endif
+#if !defined(MAGICK_FALLTHROUGH)
+#  define MAGICK_FALLTHROUGH /*nothing*/
+#endif
 #if !defined(MAGICK_ASSUME_ALIGNED)
 #  define MAGICK_ASSUME_ALIGNED(exp,align) (exp)
 #endif
 #if !defined(MAGICK_ASSUME_ALIGNED_OFFSET)
 #  define MAGICK_ASSUME_ALIGNED_OFFSET(exp,align,offset) (exp)
 #endif
-#if !defined(MAGICK_OPTIMIZE_FUNC)
-#  define MAGICK_OPTIMIZE_FUNC(opt) /*nothing*/
+
+  /*
+    The isnan and isinf macros are defined by c99 but might not always be
+    available.  If they (or a substitute) are not available, then define them
+    to a false value.
+  */
+#if defined(isnan)
+#define MAGICK_ISNAN(d) isnan(d)
+#else
+#define MAGICK_ISNAN(d) (0)
+#endif
+#if defined(isinf)
+#define MAGICK_ISINF(d) isinf(d)
+#else
+#define MAGICK_ISINF(d) (0)
+#endif
+#if defined(isnormal)
+#define MAGICK_ISNORMAL(d) isnormal(d)
+#else
+#define MAGICK_ISNORMAL(d) (1)
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

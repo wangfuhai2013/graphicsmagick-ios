@@ -1,12 +1,12 @@
 /*
-  Copyright (C) 2003 - 2016 GraphicsMagick Group
+  Copyright (C) 2003 - 2020 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   GraphicsMagick Utility Methods.
 */
 #ifndef _MAGICK_UTILITY_H
@@ -78,9 +78,9 @@ extern MagickExport char
   *TranslateTextEx(const ImageInfo *,Image *,const char *,MagickTextTranslate);
 
 extern MagickExport const char
-  *GetClientFilename(void),
-  *GetClientName(void),
-  *GetClientPath(void),
+  *GetClientFilename(void) MAGICK_FUNC_CONST,
+  *GetClientName(void) MAGICK_FUNC_CONST,
+  *GetClientPath(void) MAGICK_FUNC_CONST,
   *SetClientFilename(const char *),
   *SetClientName(const char *),
   *SetClientPath(const char *);
@@ -90,9 +90,9 @@ extern MagickExport double
 
 extern MagickExport int
   GetGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
-  GlobExpression(const char *,const char *),
-  LocaleNCompare(const char *,const char *,const size_t),
-  LocaleCompare(const char *,const char *),
+  GlobExpression(const char *,const char *) MAGICK_FUNC_PURE,
+  LocaleNCompare(const char *,const char *,const size_t) MAGICK_FUNC_PURE,
+  LocaleCompare(const char *,const char *) MAGICK_FUNC_PURE,
   GetMagickDimension(const char *str,double *width,double *height,double *xoff,double *yoff),
   GetMagickGeometry(const char *geometry,long *x,long *y,unsigned long *width,
     unsigned long *height),
@@ -121,14 +121,14 @@ extern MagickExport MagickBool
   IsAccessibleNoLogging(const char *),
   IsAccessibleAndNotEmpty(const char *),
   IsGeometry(const char *),
-  IsGlob(const char *),
+  IsGlob(const char *) MAGICK_FUNC_PURE,
   IsWriteable(const char *),
   MagickSceneFileName(char *filename,const char* filename_template,
     const char* scene_template,const MagickBool force,unsigned long scene),
   SubstituteString(char **buffer,const char *search,const char *replace);
 
 extern MagickExport unsigned long
-  MultilineCensus(const char *);
+  MultilineCensus(const char *) MAGICK_FUNC_PURE;
 
 extern MagickExport void
   AppendImageFormat(const char *,char *),
@@ -140,14 +140,14 @@ extern MagickExport void
   GetToken(const char *,char **,char *) MAGICK_FUNC_DEPRECATED,
   LocaleLower(char *),
   LocaleUpper(char *),
-  Strip(char *),
+  Strip(char *) MAGICK_FUNC_DEPRECATED,
   SetGeometry(const Image *,RectangleInfo *);
 
-extern MagickExport void
+extern MagickExport size_t
   FormatString(char *string,const char *format,...) MAGICK_ATTRIBUTE((__format__ (__printf__,2,3))),
-  FormatStringList(char *string,const char *format,va_list operands),
+  FormatStringList(char *string,const char *format,va_list operands) MAGICK_ATTRIBUTE((__format__ (__printf__,2,0))),
   MagickFormatString(char *string,const size_t length,const char *format,...) MAGICK_ATTRIBUTE((__format__ (__printf__,3,4))),
-  MagickFormatStringList(char *string,const size_t length,const char *format,va_list operands);
+  MagickFormatStringList(char *string,const size_t length,const char *format,va_list operands) MAGICK_ATTRIBUTE((__format__ (__printf__,3,0)));
 
 extern MagickExport magick_int64_t
   MagickSizeStrToInt64(const char *str,const unsigned int kilo);
@@ -155,35 +155,12 @@ extern MagickExport magick_int64_t
 extern MagickExport size_t
   MagickGetToken(const char *start,char **end,char *token,
                  const size_t buffer_length),
-  MagickStripSpacesFromString(char *string),
   MagickStrlCat(char *dst, const char *src, const size_t size) MAGICK_FUNC_NONNULL,
   MagickStrlCpy(char *dst, const char *src, const size_t size) MAGICK_FUNC_NONNULL,
   MagickStrlCpyTrunc(char *dst, const char *src, const size_t size) MAGICK_FUNC_NONNULL;
 
 #if defined(MAGICK_IMPLEMENTATION)
-
-/*
-  Force argument into range accepted by <ctype.h> functions.
-*/
-#define CTYPE_ARG(value) ((int) ((unsigned char) (value)))
-
-#if !defined(HAVE_STRLCAT)
-#  define strlcat(dst,src,size) MagickStrlCat(dst,src,size)
-#endif
-
-#if !defined(HAVE_STRLCPY)
-#  define strlcpy(dst,src,size) MagickStrlCpy(dst,src,size)
-#endif
-
-extern double MagickFmin(const double x, const double y) MAGICK_FUNC_CONST;
-extern double MagickFmax(const double x, const double y) MAGICK_FUNC_CONST;
-
-extern MagickExport MagickPassFail MagickAtoFChk(const char *str, double *value);
-extern MagickExport MagickPassFail MagickAtoIChk(const char *str, int *value);
-extern MagickExport MagickPassFail MagickAtoUIChk(const char *str, unsigned int *value);
-extern MagickExport MagickPassFail MagickAtoLChk(const char *str, long *value);
-extern MagickExport MagickPassFail MagickAtoULChk(const char *str, unsigned long *value);
-
+#  include "magick/utility-private.h"
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)

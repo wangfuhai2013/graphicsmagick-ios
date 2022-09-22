@@ -1,11 +1,11 @@
 /*
   Copyright (C) 2003 - 2010 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   ImageMagick Image Transform Methods.
 */
 #ifndef _MAGICK_TRANSFORM_H
@@ -28,7 +28,7 @@ extern MagickExport Image
   *RollImage(const Image *image,const long x_offset,const long y_offset,ExceptionInfo *exception),
   *ShaveImage(const Image *image,const RectangleInfo *shave_info,ExceptionInfo *exception);
 
-extern MagickExport void
+extern MagickExport MagickPassFail
   TransformImage(Image **,const char *,const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)

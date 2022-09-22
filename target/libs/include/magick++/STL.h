@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999 - 2015
+// Copyright Bob Friesenhahn, 1999 - 2018
 //
 // Definition and implementation of template functions for using
 // Magick::Image with STL containers.
@@ -42,11 +42,27 @@ namespace Magick
   // for_each( images.begin(), images.end(), transparentImage( "red" ) );
   // writeImages( images.begin(), images.end(), "animation.gif" );
 
+  //
+  // Base class for all function objects used to manipulate images via
+  // an Image reference.  (used to inherit from std::unary_function,
+  // but it was removed in C++'17).
+  //
+  // https://en.cppreference.com/w/cpp/utility/functional/unary_function
+  // https://en.cppreference.com/w/cpp/utility/functional/function
+  //
+
+#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
+#  define MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
+#else
+#  define MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE \
+  : public std::unary_function<Image&,void>
+#endif
+
   // Local adaptive threshold image
   // http://www.dai.ed.ac.uk/HIPR2/adpthrsh.htm
   // Width x height define the size of the pixel neighborhood
   // offset = constant to subtract from pixel neighborhood mean
-  class MagickDLLDecl adaptiveThresholdImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl adaptiveThresholdImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     adaptiveThresholdImage( const unsigned int width_,
@@ -62,7 +78,7 @@ namespace Magick
   };
 
   // Add noise to image with specified noise type
-  class MagickDLLDecl addNoiseImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl addNoiseImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     addNoiseImage ( NoiseType noiseType_ );
@@ -74,7 +90,7 @@ namespace Magick
   };
 
   // Transform image by specified affine (or free transform) matrix.
-  class MagickDLLDecl affineTransformImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl affineTransformImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     affineTransformImage( const DrawableAffine &affine_ );
@@ -86,7 +102,7 @@ namespace Magick
   };
 
   // Annotate image (draw text on image)
-  class MagickDLLDecl annotateImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl annotateImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     // Annotate using specified text, and placement location
@@ -96,8 +112,8 @@ namespace Magick
     // Annotate using specified text, bounding area, and placement
     // gravity
     annotateImage ( const std::string &text_,
-		    const Geometry &geometry_,
-		    const GravityType gravity_ );
+                    const Geometry &geometry_,
+                    const GravityType gravity_ );
 
     // Annotate with text using specified text, bounding area,
     // placement gravity, and rotation.
@@ -109,7 +125,7 @@ namespace Magick
     // Annotate with text (bounding area is entire image) and
     // placement gravity.
     annotateImage ( const std::string &text_,
-		    const GravityType gravity_ );
+                    const GravityType gravity_ );
 
     void operator()( Image &image_ ) const;
 
@@ -125,7 +141,7 @@ namespace Magick
   };
 
   // Blur image with specified blur factor
-  class MagickDLLDecl blurImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl blurImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     blurImage( const double radius_ = 1, const double sigma_ = 0.5 );
@@ -138,7 +154,7 @@ namespace Magick
   };
 
   // Border image (add border to image)
-  class MagickDLLDecl borderImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl borderImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     borderImage( const Geometry &geometry_ = borderGeometryDefault  );
@@ -150,7 +166,7 @@ namespace Magick
   };
 
   // Extract channel from image
-  class MagickDLLDecl channelImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl channelImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     channelImage( const ChannelType channel_ );
@@ -162,7 +178,7 @@ namespace Magick
   };
 
   // Charcoal effect image (looks like charcoal sketch)
-  class MagickDLLDecl charcoalImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl charcoalImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     charcoalImage( const double radius_ = 1, const double sigma_ = 0.5  );
@@ -175,7 +191,7 @@ namespace Magick
   };
 
   // Chop image (remove vertical or horizontal subregion of image)
-  class MagickDLLDecl chopImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl chopImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     chopImage( const Geometry &geometry_ );
@@ -187,13 +203,13 @@ namespace Magick
   };
 
   // Colorize image using pen color at specified percent opacity
-  class MagickDLLDecl colorizeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl colorizeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     colorizeImage( const unsigned int opacityRed_,
                    const unsigned int opacityGreen_,
                    const unsigned int opacityBlue_,
-		   const Color &penColor_ );
+                   const Color &penColor_ );
 
     colorizeImage( const unsigned int opacity_,
                    const Color &penColor_ );
@@ -212,7 +228,7 @@ namespace Magick
   // the exchange of basic primary color grading information between
   // equipment and software from different manufacturers.  It is a
   // useful transform for other purposes as well.
-  class MagickDLLDecl cdlImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl cdlImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     cdlImage( const std::string &cdl_ );
@@ -225,11 +241,11 @@ namespace Magick
 
   // Apply a color matrix to the image channels.  The user supplied
   // matrix may be of order 1 to 5 (1x1 through 5x5).
-  class MagickDLLDecl colorMatrixImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl colorMatrixImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     colorMatrixImage( const unsigned int order_,
-		      const double *color_matrix_ );
+                      const double *color_matrix_ );
 
     void operator()( Image &image_ ) const;
 
@@ -239,7 +255,7 @@ namespace Magick
   };
 
   // Convert the image colorspace representation
-  class MagickDLLDecl colorSpaceImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl colorSpaceImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     colorSpaceImage( ColorspaceType colorSpace_ );
@@ -251,7 +267,7 @@ namespace Magick
   };
 
   // Comment image (add comment string to image)
-  class MagickDLLDecl commentImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl commentImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     commentImage( const std::string &comment_ );
@@ -264,17 +280,17 @@ namespace Magick
 
   // Compose an image onto another at specified offset and using
   // specified algorithm
-  class MagickDLLDecl compositeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl compositeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     compositeImage( const Image &compositeImage_,
-		    int xOffset_,
-		    int yOffset_,
-		    CompositeOperator compose_ = InCompositeOp );
+                    int xOffset_,
+                    int yOffset_,
+                    CompositeOperator compose_ = InCompositeOp );
 
     compositeImage( const Image &compositeImage_,
-		    const Geometry &offset_,
-		    CompositeOperator compose_ = InCompositeOp );
+                    const Geometry &offset_,
+                    CompositeOperator compose_ = InCompositeOp );
 
     void operator()( Image &image_ ) const;
 
@@ -286,7 +302,7 @@ namespace Magick
   };
 
   // Contrast image (enhance intensity differences in image)
-  class MagickDLLDecl contrastImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl contrastImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     contrastImage( const unsigned int sharpen_ );
@@ -298,7 +314,7 @@ namespace Magick
   };
 
   // Crop image (subregion of original image)
-  class MagickDLLDecl cropImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl cropImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     cropImage( const Geometry &geometry_ );
@@ -310,7 +326,7 @@ namespace Magick
   };
 
   // Cycle image colormap
-  class MagickDLLDecl cycleColormapImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl cycleColormapImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     cycleColormapImage( const int amount_ );
@@ -322,7 +338,7 @@ namespace Magick
   };
 
   // Despeckle image (reduce speckle noise)
-  class MagickDLLDecl despeckleImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl despeckleImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     despeckleImage( void );
@@ -333,7 +349,7 @@ namespace Magick
   };
 
   // Draw on image
-  class MagickDLLDecl drawImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl drawImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     // Draw on image using a single drawable
@@ -350,7 +366,7 @@ namespace Magick
   };
 
   // Edge image (hilight edges in image)
-  class MagickDLLDecl edgeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl edgeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     edgeImage( const double radius_ = 0.0  );
@@ -362,7 +378,7 @@ namespace Magick
   };
 
   // Emboss image (hilight edges with 3D effect)
-  class MagickDLLDecl embossImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl embossImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     embossImage( void );
@@ -376,7 +392,7 @@ namespace Magick
   };
 
   // Enhance image (minimize noise)
-  class MagickDLLDecl enhanceImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl enhanceImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     enhanceImage( void );
@@ -387,7 +403,7 @@ namespace Magick
   };
 
   // Equalize image (histogram equalization)
-  class MagickDLLDecl equalizeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl equalizeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     equalizeImage( void );
@@ -404,7 +420,7 @@ namespace Magick
   // parameter.  Parameters which are supported by image properties
   // (gravity and backgroundColor) update those image properties as a
   // side-effect.
-  class MagickDLLDecl extentImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl extentImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     // Extent image using a geometry
@@ -436,7 +452,7 @@ namespace Magick
   };
 
   // Color to use when filling drawn objects
-  class MagickDLLDecl fillColorImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl fillColorImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     fillColorImage( const Color &fillColor_ );
@@ -448,7 +464,7 @@ namespace Magick
   };
 
   // Flip image (reflect each scanline in the vertical direction)
-  class MagickDLLDecl flipImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl flipImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     flipImage( void );
@@ -459,7 +475,7 @@ namespace Magick
   };
 
   // Flood-fill image with color
-  class MagickDLLDecl floodFillColorImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl floodFillColorImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     // Flood-fill color across pixels starting at target-pixel and
@@ -467,22 +483,22 @@ namespace Magick
     // Uses current fuzz setting when determining color match.
     floodFillColorImage( const unsigned int x_,
                          const unsigned int y_,
-			 const Color &fillColor_ );
+                         const Color &fillColor_ );
 
     floodFillColorImage( const Geometry &point_,
-			 const Color &fillColor_ );
+                         const Color &fillColor_ );
 
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
     floodFillColorImage( const unsigned int x_,
                          const unsigned int y_,
-			 const Color &fillColor_,
-			 const Color &borderColor_ );
+                         const Color &fillColor_,
+                         const Color &borderColor_ );
 
     floodFillColorImage( const Geometry &point_,
-			 const Color &fillColor_,
-			 const Color &borderColor_ );
+                         const Color &fillColor_,
+                         const Color &borderColor_ );
 
     void operator()( Image &image_ ) const;
 
@@ -494,7 +510,7 @@ namespace Magick
   };
 
   // Flood-fill image with texture
-  class MagickDLLDecl floodFillTextureImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl floodFillTextureImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     // Flood-fill texture across pixels that match the color of the
@@ -502,22 +518,22 @@ namespace Magick
     // Uses current fuzz setting when determining color match.
     floodFillTextureImage( const unsigned int x_,
                            const unsigned int y_,
-			   const Image &texture_ );
+                           const Image &texture_ );
 
     floodFillTextureImage( const Geometry &point_,
-			   const Image &texture_ );
+                           const Image &texture_ );
 
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
     floodFillTextureImage( const unsigned int x_,
                            const unsigned int y_,
-			   const Image &texture_,
-			   const Color &borderColor_ );
+                           const Image &texture_,
+                           const Color &borderColor_ );
 
     floodFillTextureImage( const Geometry &point_,
-			   const Image &texture_,
-			   const Color &borderColor_ );
+                           const Image &texture_,
+                           const Color &borderColor_ );
 
     void operator()( Image &image_ ) const;
 
@@ -529,7 +545,7 @@ namespace Magick
   };
 
   // Flop image (reflect each scanline in the horizontal direction)
-  class MagickDLLDecl flopImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl flopImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     flopImage( void );
@@ -540,13 +556,13 @@ namespace Magick
   };
 
   // Frame image
-  class MagickDLLDecl frameImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl frameImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     frameImage( const Geometry &geometry_ = frameGeometryDefault );
 
     frameImage( const unsigned int width_, const unsigned int height_,
-		const int innerBevel_ = 6, const int outerBevel_ = 6 );
+                const int innerBevel_ = 6, const int outerBevel_ = 6 );
 
     void operator()( Image &image_ ) const;
 
@@ -558,14 +574,14 @@ namespace Magick
   };
 
   // Gamma correct image
-  class MagickDLLDecl gammaImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl gammaImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     gammaImage( const double gamma_ );
 
     gammaImage ( const double gammaRed_,
-		 const double gammaGreen_,
-		 const double gammaBlue_ );
+                 const double gammaGreen_,
+                 const double gammaBlue_ );
 
     void operator()( Image &image_ ) const;
 
@@ -579,7 +595,7 @@ namespace Magick
   // The number of neighbor pixels to be included in the convolution
   // mask is specified by 'width_'. The standard deviation of the
   // gaussian bell curve is specified by 'sigma_'.
-  class MagickDLLDecl gaussianBlurImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl gaussianBlurImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     gaussianBlurImage( const double width_, const double sigma_ );
@@ -592,7 +608,7 @@ namespace Magick
   };
 
   // Implode image (special effect)
-  class MagickDLLDecl implodeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl implodeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     implodeImage( const double factor_ = 50 );
@@ -604,7 +620,7 @@ namespace Magick
   };
 
   // Apply a color lookup table (Hald CLUT) to the image.
-  class MagickDLLDecl haldClutImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl haldClutImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     haldClutImage( const Image &haldClutImage_ );
@@ -617,7 +633,7 @@ namespace Magick
 
   // Set image validity. Valid images become empty (inValid) if
   // argument is false.
-  class MagickDLLDecl isValidImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl isValidImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     isValidImage( const bool isValid_ );
@@ -629,7 +645,7 @@ namespace Magick
   };
 
   // Label image
-  class MagickDLLDecl labelImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl labelImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     labelImage( const std::string &label_ );
@@ -641,7 +657,7 @@ namespace Magick
   };
 
   // Level image
-  class MagickDLLDecl levelImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl levelImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     levelImage( const double black_point,
@@ -657,7 +673,7 @@ namespace Magick
   };
 
   // Level image channel
-  class MagickDLLDecl levelChannelImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl levelChannelImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     levelChannelImage( const Magick::ChannelType channel,
@@ -675,7 +691,7 @@ namespace Magick
   };
 
   // Magnify image by integral size
-  class MagickDLLDecl magnifyImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl magnifyImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     magnifyImage( void );
@@ -686,7 +702,7 @@ namespace Magick
   };
 
   // Remap image colors with closest color from reference image
-  class MagickDLLDecl mapImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl mapImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     mapImage( const Image &mapImage_ ,
@@ -700,13 +716,13 @@ namespace Magick
   };
 
   // Floodfill designated area with a matte value
-  class MagickDLLDecl matteFloodfillImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl matteFloodfillImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     matteFloodfillImage( const Color &target_ ,
-			 const unsigned int matte_,
-			 const int x_, const int y_,
-			 const PaintMethod method_ );
+                         const unsigned int matte_,
+                         const int x_, const int y_,
+                         const PaintMethod method_ );
 
     void operator()( Image &image_ ) const;
 
@@ -720,7 +736,7 @@ namespace Magick
 
   // Filter image by replacing each pixel component with the median
   // color in a circular neighborhood
-  class MagickDLLDecl medianFilterImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl medianFilterImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     medianFilterImage( const double radius_ = 0.0 );
@@ -732,7 +748,7 @@ namespace Magick
   };
 
   // Reduce image by integral size
-  class MagickDLLDecl minifyImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl minifyImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     minifyImage( void );
@@ -748,12 +764,12 @@ namespace Magick
   // absolute rotation of -180 degrees to +180 degrees from the
   // current position corresponding to an argument range of 0 to 2.0
   // (1.0 for no change).
-  class MagickDLLDecl modulateImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl modulateImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     modulateImage( const double brightness_,
-		   const double saturation_,
-		   const double hue_ );
+                   const double saturation_,
+                   const double hue_ );
 
     void operator()( Image &image_ ) const;
 
@@ -765,7 +781,7 @@ namespace Magick
 
   // Negate colors in image.  Set grayscale to only negate grayscale
   // values in image.
-  class MagickDLLDecl negateImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl negateImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     negateImage( const bool grayscale_ = false );
@@ -778,7 +794,7 @@ namespace Magick
 
   // Normalize image (increase contrast by normalizing the pixel
   // values to span the full range of color values)
-  class MagickDLLDecl normalizeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl normalizeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     normalizeImage( void );
@@ -789,7 +805,7 @@ namespace Magick
   };
 
   // Oilpaint image (image looks like oil painting)
-  class MagickDLLDecl oilPaintImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl oilPaintImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     oilPaintImage( const double radius_ = 3 );
@@ -807,7 +823,7 @@ namespace Magick
   // MaxRGB. The defines OpaqueOpacity and TransparentOpacity are
   // available to specify completely opaque or completely transparent,
   // respectively.
-  class MagickDLLDecl opacityImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl opacityImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     opacityImage( const unsigned int opacity_ );
@@ -819,11 +835,11 @@ namespace Magick
   };
 
   // Change color of opaque pixel to specified pen color.
-  class MagickDLLDecl opaqueImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl opaqueImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     opaqueImage( const Color &opaqueColor_,
-		 const Color &penColor_ );
+                 const Color &penColor_ );
 
     void operator()( Image &image_ ) const;
 
@@ -833,7 +849,7 @@ namespace Magick
   };
 
   // Quantize image (reduce number of colors)
-  class MagickDLLDecl quantizeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl quantizeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     quantizeImage( const bool measureError_ = false );
@@ -846,11 +862,11 @@ namespace Magick
 
   // Raise image (lighten or darken the edges of an image to give a
   // 3-D raised or lowered effect)
-  class MagickDLLDecl raiseImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl raiseImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     raiseImage( const Geometry &geometry_ = raiseGeometryDefault,
-		const bool raisedFlag_ = false );
+                const bool raisedFlag_ = false );
 
     void operator()( Image &image_ ) const;
 
@@ -860,7 +876,7 @@ namespace Magick
   };
 
   // Reduce noise in image using a noise peak elimination filter
-  class MagickDLLDecl reduceNoiseImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl reduceNoiseImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     reduceNoiseImage( void );
@@ -874,7 +890,7 @@ namespace Magick
   };
 
   // Resize image to a certain geomtry
-  class MagickDLLDecl resizeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl resizeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     resizeImage( const Geometry &geometry_ );
@@ -887,7 +903,7 @@ namespace Magick
 
   // Roll image (rolls image vertically and horizontally) by specified
   // number of columnms and rows)
-  class MagickDLLDecl rollImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl rollImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     rollImage( const Geometry &roll_ );
@@ -902,7 +918,7 @@ namespace Magick
   };
 
   // Rotate image counter-clockwise by specified number of degrees.
-  class MagickDLLDecl rotateImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl rotateImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     rotateImage( const double degrees_ );
@@ -914,7 +930,7 @@ namespace Magick
   };
 
   // Resize image by using pixel sampling algorithm
-  class MagickDLLDecl sampleImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl sampleImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     sampleImage( const Geometry &geometry_ );
@@ -926,7 +942,7 @@ namespace Magick
   };
 
   // Resize image by using simple ratio algorithm
-  class MagickDLLDecl scaleImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl scaleImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     scaleImage( const Geometry &geometry_ );
@@ -941,11 +957,11 @@ namespace Magick
   // histograms of the color components and identifying units that are
   // homogeneous with the fuzzy c-means technique.
   // Also uses QuantizeColorSpace and Verbose image attributes
-  class MagickDLLDecl segmentImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl segmentImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     segmentImage( const double clusterThreshold_ = 1.0,
-		  const double smoothingThreshold_ = 1.5 );
+                  const double smoothingThreshold_ = 1.5 );
 
     void operator()( Image &image_ ) const;
 
@@ -955,12 +971,12 @@ namespace Magick
   };
 
   // Shade image using distant light source
-  class MagickDLLDecl shadeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl shadeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     shadeImage( const double azimuth_ = 30,
-		const double elevation_ = 30,
-		const bool   colorShading_ = false );
+                const double elevation_ = 30,
+                const bool   colorShading_ = false );
 
     void operator()( Image &image_ ) const;
 
@@ -971,7 +987,7 @@ namespace Magick
   };
 
   // Sharpen pixels in image
-  class MagickDLLDecl sharpenImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl sharpenImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     sharpenImage( const double radius_ = 1, const double sigma_ = 0.5 );
@@ -984,7 +1000,7 @@ namespace Magick
   };
 
   // Shave pixels from image edges.
-  class MagickDLLDecl shaveImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl shaveImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     shaveImage( const Geometry &geometry_ );
@@ -997,11 +1013,11 @@ namespace Magick
 
 
   // Shear image (create parallelogram by sliding image by X or Y axis)
-  class MagickDLLDecl shearImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl shearImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     shearImage( const double xShearAngle_,
-		const double yShearAngle_ );
+                const double yShearAngle_ );
 
     void operator()( Image &image_ ) const;
 
@@ -1012,7 +1028,7 @@ namespace Magick
 
   // Solarize image (similar to effect seen when exposing a
   // photographic film to light during the development process)
-  class MagickDLLDecl solarizeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl solarizeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     solarizeImage( const double factor_ );
@@ -1024,7 +1040,7 @@ namespace Magick
   };
 
   // Spread pixels randomly within image by specified ammount
-  class MagickDLLDecl spreadImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl spreadImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     spreadImage( const unsigned int amount_ = 3 );
@@ -1036,7 +1052,7 @@ namespace Magick
   };
 
   // Add a digital watermark to the image (based on second image)
-  class MagickDLLDecl steganoImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl steganoImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     steganoImage( const Image &waterMark_ );
@@ -1049,7 +1065,7 @@ namespace Magick
 
   // Create an image which appears in stereo when viewed with red-blue glasses
   // (Red image on left, blue on right)
-  class MagickDLLDecl stereoImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl stereoImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     stereoImage( const Image &rightImage_ );
@@ -1061,7 +1077,7 @@ namespace Magick
   };
 
   // Color to use when drawing object outlines
-  class MagickDLLDecl strokeColorImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl strokeColorImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     strokeColorImage( const Color &strokeColor_ );
@@ -1073,7 +1089,7 @@ namespace Magick
   };
 
   // Swirl image (image pixels are rotated by degrees)
-  class MagickDLLDecl swirlImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl swirlImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     swirlImage( const double degrees_ );
@@ -1085,7 +1101,7 @@ namespace Magick
   };
 
   // Remove all profiles and text attributes from the image.
-  class MagickDLLDecl stripImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl stripImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     stripImage( void );
@@ -1096,7 +1112,7 @@ namespace Magick
   };
 
   // Channel a texture on image background
-  class MagickDLLDecl textureImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl textureImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     textureImage( const Image &texture_ );
@@ -1108,7 +1124,7 @@ namespace Magick
   };
 
   // Threshold image
-  class MagickDLLDecl thresholdImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl thresholdImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     thresholdImage( const double threshold_ );
@@ -1120,13 +1136,13 @@ namespace Magick
   };
 
   // Transform image based on image and crop geometries
-  class MagickDLLDecl transformImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl transformImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     transformImage( const Geometry &imageGeometry_ );
 
     transformImage( const Geometry &imageGeometry_,
-		    const Geometry &cropGeometry_  );
+                    const Geometry &cropGeometry_  );
 
     void operator()( Image &image_ ) const;
 
@@ -1136,7 +1152,7 @@ namespace Magick
   };
 
   // Set image color to transparent
-  class MagickDLLDecl transparentImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl transparentImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     transparentImage( const Color& color_ );
@@ -1148,7 +1164,7 @@ namespace Magick
   };
 
   // Trim edges that are the background color from the image
-  class MagickDLLDecl trimImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl trimImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     trimImage( void );
@@ -1159,11 +1175,11 @@ namespace Magick
   };
 
   // Map image pixels to a sine wave
-  class MagickDLLDecl waveImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl waveImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     waveImage( const double amplitude_ = 25.0,
-	       const double wavelength_ = 150.0 );
+               const double wavelength_ = 150.0 );
 
     void operator()( Image &image_ ) const;
 
@@ -1173,7 +1189,7 @@ namespace Magick
   };
 
   // Zoom image to specified size.
-  class MagickDLLDecl zoomImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl zoomImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     zoomImage( const Geometry &geometry_ );
@@ -1189,7 +1205,7 @@ namespace Magick
   //
 
   // Anti-alias Postscript and TrueType fonts (default true)
-  class MagickDLLDecl antiAliasImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl antiAliasImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     antiAliasImage( const bool flag_ );
@@ -1201,7 +1217,7 @@ namespace Magick
   };
 
   // Join images into a single multi-image file
-  class MagickDLLDecl adjoinImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl adjoinImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     adjoinImage( const bool flag_ );
@@ -1214,7 +1230,7 @@ namespace Magick
 
   // Time in 1/100ths of a second which must expire before displaying
   // the next image in an animated sequence.
-  class MagickDLLDecl animationDelayImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl animationDelayImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     animationDelayImage( const unsigned int delay_ );
@@ -1227,7 +1243,7 @@ namespace Magick
 
   // Number of iterations to loop an animation (e.g. Netscape loop
   // extension) for.
-  class MagickDLLDecl animationIterationsImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl animationIterationsImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     animationIterationsImage( const unsigned int iterations_ );
@@ -1239,7 +1255,7 @@ namespace Magick
   };
 
   // Image background color
-  class MagickDLLDecl backgroundColorImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl backgroundColorImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     backgroundColorImage( const Color &color_ );
@@ -1251,7 +1267,7 @@ namespace Magick
   };
 
   // Name of texture image to tile onto the image background
-  class MagickDLLDecl backgroundTextureImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl backgroundTextureImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     backgroundTextureImage( const std::string &backgroundTexture_ );
@@ -1263,7 +1279,7 @@ namespace Magick
   };
 
   // Image border color
-  class MagickDLLDecl borderColorImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl borderColorImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     borderColorImage( const Color &color_ );
@@ -1275,7 +1291,7 @@ namespace Magick
   };
 
   // Text bounding-box base color (default none)
-  class MagickDLLDecl boxColorImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl boxColorImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     boxColorImage( const Color &boxColor_ );
@@ -1287,7 +1303,7 @@ namespace Magick
   };
 
   // Chromaticity blue primary point (e.g. x=0.15, y=0.06)
-  class MagickDLLDecl chromaBluePrimaryImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl chromaBluePrimaryImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     chromaBluePrimaryImage( const double x_, const double y_ );
@@ -1300,7 +1316,7 @@ namespace Magick
   };
 
   // Chromaticity green primary point (e.g. x=0.3, y=0.6)
-  class MagickDLLDecl chromaGreenPrimaryImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl chromaGreenPrimaryImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     chromaGreenPrimaryImage( const double x_, const double y_ );
@@ -1313,7 +1329,7 @@ namespace Magick
   };
 
   // Chromaticity red primary point (e.g. x=0.64, y=0.33)
-  class MagickDLLDecl chromaRedPrimaryImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl chromaRedPrimaryImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     chromaRedPrimaryImage( const double x_, const double y_ );
@@ -1326,7 +1342,7 @@ namespace Magick
   };
 
   // Chromaticity white point (e.g. x=0.3127, y=0.329)
-  class MagickDLLDecl chromaWhitePointImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl chromaWhitePointImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     chromaWhitePointImage( const double x_, const double y_ );
@@ -1339,7 +1355,7 @@ namespace Magick
   };
 
   // Colors within this distance are considered equal
-  class MagickDLLDecl colorFuzzImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl colorFuzzImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     colorFuzzImage( const double fuzz_ );
@@ -1351,7 +1367,7 @@ namespace Magick
   };
 
   // Color at colormap position index_
-  class MagickDLLDecl colorMapImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl colorMapImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     colorMapImage( const unsigned int index_, const Color &color_ );
@@ -1365,7 +1381,7 @@ namespace Magick
 
   // Composition operator to be used when composition is implicitly used
   // (such as for image flattening).
-  class MagickDLLDecl composeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl composeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     composeImage( const CompositeOperator compose_ );
@@ -1377,7 +1393,7 @@ namespace Magick
   };
 
   // Compression type
-  class MagickDLLDecl compressTypeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl compressTypeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     compressTypeImage( const CompressionType compressType_ );
@@ -1389,7 +1405,7 @@ namespace Magick
   };
 
   // Vertical and horizontal resolution in pixels of the image
-  class MagickDLLDecl densityImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl densityImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     densityImage( const Geometry &geomery_ );
@@ -1401,7 +1417,7 @@ namespace Magick
   };
 
   // Image depth (bits allocated to red/green/blue components)
-  class MagickDLLDecl depthImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl depthImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     depthImage( const unsigned int depth_ );
@@ -1414,7 +1430,7 @@ namespace Magick
 
   // Endianness (LSBEndian like Intel or MSBEndian like SPARC) for image
   // formats which support endian-specific options.
-  class MagickDLLDecl endianImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl endianImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     endianImage( const EndianType endian_ );
@@ -1426,7 +1442,7 @@ namespace Magick
   };
 
   // Image file name
-  class MagickDLLDecl fileNameImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl fileNameImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     fileNameImage( const std::string &fileName_ );
@@ -1438,7 +1454,7 @@ namespace Magick
   };
 
   // Filter to use when resizing image
-  class MagickDLLDecl filterTypeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl filterTypeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     filterTypeImage( const FilterTypes filterType_ );
@@ -1450,7 +1466,7 @@ namespace Magick
   };
 
   // Text rendering font
-  class MagickDLLDecl fontImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl fontImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     fontImage( const std::string &font_ );
@@ -1462,7 +1478,7 @@ namespace Magick
   };
 
   // Font point size
-  class MagickDLLDecl fontPointsizeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl fontPointsizeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     fontPointsizeImage( const unsigned int pointsize_ );
@@ -1474,7 +1490,7 @@ namespace Magick
   };
 
   // GIF disposal method
-  class MagickDLLDecl gifDisposeMethodImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl gifDisposeMethodImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     gifDisposeMethodImage( const unsigned int disposeMethod_ );
@@ -1486,7 +1502,7 @@ namespace Magick
   };
 
   // Type of interlacing to use
-  class MagickDLLDecl interlaceTypeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl interlaceTypeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     interlaceTypeImage( const InterlaceType interlace_ );
@@ -1498,7 +1514,7 @@ namespace Magick
   };
 
   // Linewidth for drawing vector objects (default one)
-  class MagickDLLDecl lineWidthImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl lineWidthImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     lineWidthImage( const double lineWidth_ );
@@ -1510,7 +1526,7 @@ namespace Magick
   };
 
   // File type magick identifier (.e.g "GIF")
-  class MagickDLLDecl magickImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl magickImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     magickImage( const std::string &magick_ );
@@ -1522,7 +1538,7 @@ namespace Magick
   };
 
   // Image supports transparent color
-  class MagickDLLDecl matteImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl matteImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     matteImage( const bool matteFlag_ );
@@ -1534,7 +1550,7 @@ namespace Magick
   };
 
   // Transparent color
-  class MagickDLLDecl matteColorImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl matteColorImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     matteColorImage( const Color &matteColor_ );
@@ -1546,7 +1562,7 @@ namespace Magick
   };
 
   // Indicate that image is black and white
-  class MagickDLLDecl monochromeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl monochromeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     monochromeImage( const bool monochromeFlag_ );
@@ -1558,7 +1574,7 @@ namespace Magick
   };
 
   // Pen color
-  class MagickDLLDecl penColorImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl penColorImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     penColorImage( const Color &penColor_ );
@@ -1570,7 +1586,7 @@ namespace Magick
   };
 
   // Pen texture image.
-  class MagickDLLDecl penTextureImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl penTextureImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     penTextureImage( const Image &penTexture_ );
@@ -1582,12 +1598,12 @@ namespace Magick
   };
 
   // Set pixel color at location x & y.
-  class MagickDLLDecl pixelColorImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl pixelColorImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     pixelColorImage( const unsigned int x_,
                      const unsigned int y_,
-		     const Color &color_);
+                     const Color &color_);
 
     void operator()( Image &image_ ) const;
 
@@ -1598,7 +1614,7 @@ namespace Magick
   };
 
   // Postscript page size.
-  class MagickDLLDecl pageImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl pageImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     pageImage( const Geometry &pageSize_ );
@@ -1610,7 +1626,7 @@ namespace Magick
   };
 
   // JPEG/MIFF/PNG compression level (default 75).
-  class MagickDLLDecl qualityImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl qualityImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     qualityImage( const unsigned int quality_ );
@@ -1622,7 +1638,7 @@ namespace Magick
   };
 
   // Maximum number of colors to quantize to
-  class MagickDLLDecl quantizeColorsImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl quantizeColorsImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     quantizeColorsImage( const unsigned int colors_ );
@@ -1634,7 +1650,7 @@ namespace Magick
   };
 
   // Colorspace to quantize in.
-  class MagickDLLDecl quantizeColorSpaceImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl quantizeColorSpaceImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     quantizeColorSpaceImage( const ColorspaceType colorSpace_ );
@@ -1646,7 +1662,7 @@ namespace Magick
   };
 
   // Dither image during quantization (default true).
-  class MagickDLLDecl quantizeDitherImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl quantizeDitherImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     quantizeDitherImage( const bool ditherFlag_ );
@@ -1658,7 +1674,7 @@ namespace Magick
   };
 
   // Quantization tree-depth
-  class MagickDLLDecl quantizeTreeDepthImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl quantizeTreeDepthImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     quantizeTreeDepthImage( const unsigned int treeDepth_ );
@@ -1670,7 +1686,7 @@ namespace Magick
   };
 
   // The type of rendering intent
-  class MagickDLLDecl renderingIntentImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl renderingIntentImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     renderingIntentImage( const RenderingIntent renderingIntent_ );
@@ -1682,7 +1698,7 @@ namespace Magick
   };
 
   // Units of image resolution
-  class MagickDLLDecl resolutionUnitsImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl resolutionUnitsImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     resolutionUnitsImage( const ResolutionType resolutionUnits_ );
@@ -1694,7 +1710,7 @@ namespace Magick
   };
 
   // Image scene number
-  class MagickDLLDecl sceneImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl sceneImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     sceneImage( const unsigned int scene_ );
@@ -1706,7 +1722,7 @@ namespace Magick
   };
 
   // Width and height of a raw image
-  class MagickDLLDecl sizeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl sizeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     sizeImage( const Geometry &geometry_ );
@@ -1718,7 +1734,7 @@ namespace Magick
   };
 
   // Subimage of an image sequence
-  class MagickDLLDecl subImageImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl subImageImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     subImageImage( const unsigned int subImage_ );
@@ -1730,7 +1746,7 @@ namespace Magick
   };
 
   // Number of images relative to the base image
-  class MagickDLLDecl subRangeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl subRangeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     subRangeImage( const unsigned int subRange_ );
@@ -1742,7 +1758,7 @@ namespace Magick
   };
 
   // Tile name
-  class MagickDLLDecl tileNameImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl tileNameImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     tileNameImage( const std::string &tileName_ );
@@ -1754,7 +1770,7 @@ namespace Magick
   };
 
   // Image storage type
-  class MagickDLLDecl typeImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl typeImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     typeImage( const ImageType type_ );
@@ -1767,7 +1783,7 @@ namespace Magick
 
 
   // Print detailed information about the image
-  class MagickDLLDecl verboseImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl verboseImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     verboseImage( const bool verbose_ );
@@ -1779,7 +1795,7 @@ namespace Magick
   };
 
   // FlashPix viewing parameters
-  class MagickDLLDecl viewImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl viewImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     viewImage( const std::string &view_ );
@@ -1792,7 +1808,7 @@ namespace Magick
 
   // X11 display to display to, obtain fonts from, or to capture
   // image from
-  class MagickDLLDecl x11DisplayImage : public std::unary_function<Image&,void>
+  class MagickDLLDecl x11DisplayImage MAGICK_UNARY_FUNCTION_IMAGE_REF_BASE
   {
   public:
     x11DisplayImage( const std::string &display_ );
@@ -1819,27 +1835,27 @@ namespace Magick
   // method in order to specify the entire container.
   template <class InputIterator>
   void linkImages( InputIterator first_,
-		   InputIterator last_ ) {
+                   InputIterator last_ ) {
 
     MagickLib::Image* previous = 0;
     int scene = 0;
     for ( InputIterator iter = first_; iter != last_; ++iter )
       {
-	// Unless we reduce the reference count to one, the same image
-	// structure may occur more than once in the container, causing
-	// the linked list to fail.
-	iter->modifyImage();
+        // Unless we reduce the reference count to one, the same image
+        // structure may occur more than once in the container, causing
+        // the linked list to fail.
+        iter->modifyImage();
 
-	MagickLib::Image* current = iter->image();
+        MagickLib::Image* current = iter->image();
 
-	current->previous = previous;
-	current->next     = 0;
-	current->scene    = scene++;
+        current->previous = previous;
+        current->next     = 0;
+        current->scene    = scene++;
 
-	if ( previous != 0)
-	  previous->next = current;
+        if ( previous != 0)
+          previous->next = current;
 
-	previous = current;
+        previous = current;
       }
   }
 
@@ -1848,12 +1864,12 @@ namespace Magick
   // back to its pristine un-linked state.
   template <class InputIterator>
   void unlinkImages( InputIterator first_,
-		     InputIterator last_ ) {
+                     InputIterator last_ ) {
     for( InputIterator iter = first_; iter != last_; ++iter )
       {
-	MagickLib::Image* image = iter->image();
-	image->previous = 0;
-	image->next = 0;
+        MagickLib::Image* image = iter->image();
+        image->previous = 0;
+        image->next = 0;
       }
   }
 
@@ -1862,24 +1878,24 @@ namespace Magick
   // The options are copied into the object.
   template <class Container>
   void insertImages( Container *sequence_,
-		     MagickLib::Image* images_ ) {
+                     MagickLib::Image* images_ ) {
     MagickLib::Image *image = images_;
     if ( image )
       {
-	do
-	  {
-	    MagickLib::Image* next_image = image->next;
-	    image->next = 0;
+        do
+          {
+            MagickLib::Image* next_image = image->next;
+            image->next = 0;
 
-	    if (next_image != 0)
-	      next_image->previous=0;
+            if (next_image != 0)
+              next_image->previous=0;
 
-	    sequence_->push_back( Magick::Image( image ) );
+            sequence_->push_back( Magick::Image( image ) );
 
-	    image=next_image;
-	  } while( image );
+            image=next_image;
+          } while( image );
 
-	return;
+        return;
       }
   }
 
@@ -1891,7 +1907,7 @@ namespace Magick
 
   template <class InputIterator>
   void animateImages( InputIterator first_,
-		      InputIterator last_ ) {
+                      InputIterator last_ ) {
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
@@ -1905,15 +1921,15 @@ namespace Magick
   // vertical direction.
   template <class InputIterator>
   void appendImages( Image *appendedImage_,
-		     InputIterator first_,
-		     InputIterator last_,
-		     bool stack_ = false) {
+                     InputIterator first_,
+                     InputIterator last_,
+                     bool stack_ = false) {
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
     MagickLib::Image* image = MagickLib::AppendImages( first_->image(),
-						       stack_,
-						       &exceptionInfo );
+                                                       stack_,
+                                                       &exceptionInfo );
     unlinkImages( first_, last_ );
     appendedImage_->replaceImage( image );
     throwException( exceptionInfo, appendedImage_->quiet() );
@@ -1923,13 +1939,13 @@ namespace Magick
   // All the input images must be the same size in pixels.
   template <class InputIterator>
   void averageImages( Image *averagedImage_,
-		      InputIterator first_,
-		      InputIterator last_ ) {
+                      InputIterator first_,
+                      InputIterator last_ ) {
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
     MagickLib::Image* image = MagickLib::AverageImages( first_->image(),
-							&exceptionInfo );
+                                                        &exceptionInfo );
     unlinkImages( first_, last_ );
     averagedImage_->replaceImage( image );
     throwException( exceptionInfo, averagedImage_->quiet() );
@@ -2025,7 +2041,7 @@ namespace Magick
           container_->push_back( coderInfo );
         }
         // Intentionally ignore missing module errors
-        catch ( Magick::ErrorModule )
+        catch ( Magick::ErrorModule & )
           {
             continue;
           }
@@ -2136,7 +2152,7 @@ namespace Magick
   //
   template <class InputIterator>
   void displayImages( InputIterator first_,
-		      InputIterator last_ ) {
+                      InputIterator last_ ) {
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
@@ -2150,13 +2166,13 @@ namespace Magick
   // This is useful for combining Photoshop layers into a single image.
   template <class InputIterator>
   void flattenImages( Image *flattendImage_,
-		      InputIterator first_,
-		      InputIterator last_ ) {
+                      InputIterator first_,
+                      InputIterator last_ ) {
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
     MagickLib::Image* image = MagickLib::FlattenImages( first_->image(),
-							&exceptionInfo );
+                                                        &exceptionInfo );
     unlinkImages( first_, last_ );
     flattendImage_->replaceImage( image );
     throwException( exceptionInfo, flattendImage_->quiet() );
@@ -2168,48 +2184,48 @@ namespace Magick
   // true in order to evaluate quantization error.
   template <class InputIterator>
   void mapImages( InputIterator first_,
-		  InputIterator last_,
-		  const Image& mapImage_,
-		  bool dither_ = false,
-		  bool measureError_ = false ) {
+                  InputIterator last_,
+                  const Image& mapImage_,
+                  bool dither_ = false,
+                  bool measureError_ = false ) {
 
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
     MagickLib::MapImages( first_->image(),
-			  mapImage_.constImage(),
-			  dither_ );
+                          mapImage_.constImage(),
+                          dither_ );
     MagickLib::GetImageException( first_->image(), &exceptionInfo );
     if ( exceptionInfo.severity != MagickLib::UndefinedException )
       {
-	unlinkImages( first_, last_ );
-	throwException( exceptionInfo, first_->quiet() );
+        unlinkImages( first_, last_ );
+        throwException( exceptionInfo, first_->quiet() );
       }
 
     MagickLib::Image* image = first_->image();
     while( image )
       {
-	// Calculate quantization error
-	if ( measureError_ )
-	  {
-	    MagickLib::GetImageQuantizeError( image );
-	    if ( image->exception.severity > MagickLib::UndefinedException )
-	      {
-		unlinkImages( first_, last_ );
-		throwException( exceptionInfo, first_->quiet() );
-	      }
-	  }
+        // Calculate quantization error
+        if ( measureError_ )
+          {
+            MagickLib::GetImageQuantizeError( image );
+            if ( image->exception.severity > MagickLib::UndefinedException )
+              {
+                unlinkImages( first_, last_ );
+                throwException( exceptionInfo, first_->quiet() );
+              }
+          }
 
-	// Udate DirectClass representation of pixels
-	MagickLib::SyncImage( image );
-	if ( image->exception.severity > MagickLib::UndefinedException )
-	  {
-	    unlinkImages( first_, last_ );
-	    throwException( exceptionInfo, first_->quiet() );
-	  }
+        // Udate DirectClass representation of pixels
+        MagickLib::SyncImage( image );
+        if ( image->exception.severity > MagickLib::UndefinedException )
+          {
+            unlinkImages( first_, last_ );
+            throwException( exceptionInfo, first_->quiet() );
+          }
 
-	// Next image
-	image=image->next;
+        // Next image
+        image=image->next;
       }
 
     unlinkImages( first_, last_ );
@@ -2218,9 +2234,9 @@ namespace Magick
   // Create a composite image by combining several separate images.
   template <class Container, class InputIterator>
   void montageImages( Container *montageImages_,
-		      InputIterator first_,
-		      InputIterator last_,
-		      const Montage &montageOpts_ ) {
+                      InputIterator first_,
+                      InputIterator last_,
+                      const Montage &montageOpts_ ) {
 
     MagickLib::MontageInfo* montageInfo =
       static_cast<MagickLib::MontageInfo*>(MagickLib::MagickMalloc(sizeof(MagickLib::MontageInfo)));
@@ -2242,11 +2258,11 @@ namespace Magick
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
     MagickLib::Image *images = MagickLib::MontageImages( first_->image(),
-							 montageInfo,
-							 &exceptionInfo );
+                                                         montageInfo,
+                                                         &exceptionInfo );
     if ( images != 0 )
       {
-	insertImages( montageImages_, images );
+        insertImages( montageImages_, images );
       }
 
     // Clean up any allocated data in montageInfo
@@ -2261,7 +2277,7 @@ namespace Magick
     // Apply transparency to montage images
     if ( montageImages_->size() > 0 && montageOpts_.transparentColor().isValid() )
       {
-	for_each( first_, last_, transparentImage( montageOpts_.transparentColor() ) );
+        for_each( first_, last_, transparentImage( montageOpts_.transparentColor() ) );
       }
 
     // Report any transparentImage() error
@@ -2272,16 +2288,16 @@ namespace Magick
   // Morph a set of images
   template <class InputIterator, class Container >
   void morphImages( Container *morphedImages_,
-		    InputIterator first_,
-		    InputIterator last_,
-		    unsigned int frames_ ) {
+                    InputIterator first_,
+                    InputIterator last_,
+                    unsigned int frames_ ) {
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
 
     // Build image list
     linkImages( first_, last_ );
     MagickLib::Image* images = MagickLib::MorphImages( first_->image(), frames_,
-						       &exceptionInfo);
+                                                       &exceptionInfo);
     // Unlink image list
     unlinkImages( first_, last_ );
 
@@ -2298,13 +2314,13 @@ namespace Magick
   // Inlay a number of images to form a single coherent picture.
   template <class InputIterator>
   void mosaicImages( Image *mosaicImage_,
-		     InputIterator first_,
-		     InputIterator last_ ) {
+                     InputIterator first_,
+                     InputIterator last_ ) {
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
     MagickLib::Image* image = MagickLib::MosaicImages( first_->image(),
-						       &exceptionInfo );
+                                                       &exceptionInfo );
     unlinkImages( first_, last_ );
     mosaicImage_->replaceImage( image );
     throwException( exceptionInfo, first_->quiet() );
@@ -2314,34 +2330,34 @@ namespace Magick
   // Set measureError_ to true in order to measure quantization error
   template <class InputIterator>
   void quantizeImages( InputIterator first_,
-		       InputIterator last_,
-		       bool measureError_ = false ) {
+                       InputIterator last_,
+                       bool measureError_ = false ) {
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
 
     linkImages( first_, last_ );
 
     MagickLib::QuantizeImages( first_->quantizeInfo(),
-			       first_->image() );
+                               first_->image() );
     MagickLib::GetImageException( first_->image(), &exceptionInfo );
     if ( exceptionInfo.severity > MagickLib::UndefinedException )
       {
-	unlinkImages( first_, last_ );
-	throwException( exceptionInfo, first_->quiet() );
+        unlinkImages( first_, last_ );
+        throwException( exceptionInfo, first_->quiet() );
       }
 
     MagickLib::Image* image = first_->image();
     while( image != 0 )
       {
-	// Calculate quantization error
-	if ( measureError_ )
-	  MagickLib::GetImageQuantizeError( image );
+        // Calculate quantization error
+        if ( measureError_ )
+          MagickLib::GetImageQuantizeError( image );
 
-	// Update DirectClass representation of pixels
-	MagickLib::SyncImage( image );
+        // Update DirectClass representation of pixels
+        MagickLib::SyncImage( image );
 
-	// Next image
-	image=image->next;
+        // Next image
+        image=image->next;
       }
 
     unlinkImages( first_, last_ );
@@ -2351,7 +2367,7 @@ namespace Magick
   // FIXME: need a way to specify options like size, depth, and density.
   template <class Container>
   void readImages( Container *sequence_,
-		   const std::string &imageSpec_ ) {
+                   const std::string &imageSpec_ ) {
     MagickLib::ImageInfo *imageInfo = MagickLib::CloneImageInfo(0);
     imageSpec_.copy( imageInfo->filename, MaxTextExtent-1 );
     imageInfo->filename[ imageSpec_.length() ] = 0;
@@ -2364,13 +2380,13 @@ namespace Magick
   }
   template <class Container>
   void readImages( Container *sequence_,
-		   const Blob &blob_ ) {
+                   const Blob &blob_ ) {
     MagickLib::ImageInfo *imageInfo = MagickLib::CloneImageInfo(0);
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
     MagickLib::Image *images = MagickLib::BlobToImage( imageInfo,
-						       blob_.data(),
-						       blob_.length(), &exceptionInfo );
+                                                       blob_.data(),
+                                                       blob_.length(), &exceptionInfo );
     MagickLib::DestroyImageInfo(imageInfo);
     insertImages( sequence_, images );
     throwException( exceptionInfo );
@@ -2385,9 +2401,9 @@ namespace Magick
   // used.
   template <class InputIterator>
   void writeImages( InputIterator first_,
-		    InputIterator last_,
-		    const std::string &imageSpec_,
-		    bool adjoin_ = true ) {
+                    InputIterator last_,
+                    const std::string &imageSpec_,
+                    bool adjoin_ = true ) {
 
     first_->adjoin( adjoin_ );
 
@@ -2403,8 +2419,8 @@ namespace Magick
 
     if ( errorStat != false )
       {
-	MagickLib::DestroyExceptionInfo( &exceptionInfo );
-	return;
+        MagickLib::DestroyExceptionInfo( &exceptionInfo );
+        return;
       }
 
     throwException( exceptionInfo, first_->quiet() );
@@ -2418,9 +2434,9 @@ namespace Magick
   // used.
   template <class InputIterator>
   void writeImages( InputIterator first_,
-		    InputIterator last_,
-		    Blob *blob_,
-		    bool adjoin_ = true) {
+                    InputIterator last_,
+                    Blob *blob_,
+                    bool adjoin_ = true) {
 
     first_->adjoin( adjoin_ );
 
@@ -2430,9 +2446,9 @@ namespace Magick
     MagickLib::GetExceptionInfo( &exceptionInfo );
     size_t length = 2048; // Efficient size for small images
     void* data = MagickLib::ImageToBlob( first_->imageInfo(),
-					 first_->image(),
-					 &length,
-					 &exceptionInfo);
+                                         first_->image(),
+                                         &length,
+                                         &exceptionInfo);
     blob_->updateNoCopy( data, length, Magick::Blob::MallocAllocator );
 
     unlinkImages( first_, last_ );

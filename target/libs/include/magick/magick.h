@@ -1,12 +1,12 @@
 /*
-  Copyright (C) 2003 - 2014 GraphicsMagick Group
+  Copyright (C) 2003 - 2020 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   GraphicsMagick Application Programming Interface declarations.
 */
 #ifndef _MAGICK_MAGICK_H
@@ -15,6 +15,11 @@
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
+
+/*
+  Flags to form options passed to InitializeMagickEx
+*/
+#define MAGICK_OPT_NO_SIGNAL_HANDER 0x0001 /* Don't register ANSI/POSIX signal handlers */
 
 typedef Image
   *(*DecoderHandler)(const ImageInfo *,ExceptionInfo *);
@@ -83,7 +88,7 @@ typedef struct _MagickInfo
                          *   that it can retrieve a bit of the file header in order to
                          *   support the file header magic logic.
                          */
-    blob_support,	/* coder uses BLOB APIs (default True) */
+    blob_support,       /* coder uses BLOB APIs (default True) */
     thread_support;     /* coder is thread safe (default True) */
 
   CoderClass
@@ -107,11 +112,13 @@ extern MagickExport const char
   *GetImageMagick(const unsigned char *magick,const size_t length);
 
 extern MagickExport MagickBool
-  IsMagickConflict(const char *magick);
+  IsMagickConflict(const char *magick) MAGICK_FUNC_PURE;
 
 extern MagickExport MagickPassFail
   ListModuleMap(FILE *file,ExceptionInfo *exception),
   ListMagickInfo(FILE *file,ExceptionInfo *exception),
+  InitializeMagickEx(const char *path, unsigned int options,
+                     ExceptionInfo *exception),
   UnregisterMagickInfo(const char *name);
 
 extern MagickExport void
@@ -130,19 +137,7 @@ extern MagickExport MagickInfo
   *SetMagickInfo(const char *name);
 
 #if defined(MAGICK_IMPLEMENTATION)
-
-  /*
-    Get blocksize to use when accessing the filesystem.
-  */
-  extern size_t
-  MagickGetFileSystemBlockSize(void);
-
-  /*
-    Set blocksize to use when accessing the filesystem.
-  */
-  extern void
-  MagickSetFileSystemBlockSize(const size_t block_size);
-
+#  include "magick/magick-private.h"
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
 

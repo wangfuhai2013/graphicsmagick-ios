@@ -1,11 +1,11 @@
 /*
   Copyright (C) 2003 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   ImageMagick Timer Methods.
 */
 #ifndef _MAGICK_TIMER_H
@@ -62,7 +62,9 @@ extern MagickExport unsigned int
 
 extern MagickExport void
   GetTimerInfo(TimerInfo *),
-  ResetTimer(TimerInfo *);
+  ResetTimer(TimerInfo *),
+  StartTimer(TimerInfo *time_info,const unsigned int reset),
+  StopTimer(TimerInfo *time_info);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

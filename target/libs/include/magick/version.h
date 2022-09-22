@@ -1,12 +1,12 @@
 /*
-  Copyright (C) 2003 - 2016 GraphicsMagick Group
+  Copyright (C) 2003 - 2022 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   GraphicsMagick version and copyright.
 */
 #ifndef _MAGICK_VERSION_H
@@ -34,13 +34,13 @@ extern "C" {
   identifying the release.
 */
 #define MagickPackageName "GraphicsMagick"
-#define MagickCopyright  "Copyright (C) 2002-2017 GraphicsMagick Group.\nAdditional copyrights and licenses apply to this software.\nSee http://www.GraphicsMagick.org/www/Copyright.html for details."
-#define MagickLibVersion  0x191600
-#define MagickLibVersionText  "1.3.26"
-#define MagickLibVersionNumber 19,16,0
-#define MagickChangeDate   "20170704"
-#define MagickReleaseDate  "2017-07-04"
-	
+#define MagickCopyright  "Copyright (C) 2002-2022 GraphicsMagick Group.\nAdditional copyrights and licenses apply to this software.\nSee http://www.GraphicsMagick.org/www/Copyright.html for details."
+#define MagickLibVersion  0x272400
+#define MagickLibVersionText  "1.3.38"
+#define MagickLibVersionNumber 27,24,0
+#define MagickChangeDate   "20220326"
+#define MagickReleaseDate  "2022-03-26"
+
 /*
   The MagickLibInterfaceNewest and MagickLibInterfaceOldest defines
   provide both the newest and oldest interfaces supported by the
@@ -54,7 +54,7 @@ extern "C" {
   MagickLibVersionNumber, but these are broken out and simplified so
   that they can be easily used in C pre-processor logic.
 */
-#define MagickLibInterfaceNewest 19
+#define MagickLibInterfaceNewest 27
 #define MagickLibInterfaceOldest 3
 
 #if (QuantumDepth == 8)
@@ -75,9 +75,9 @@ extern "C" {
   Method declarations.
 */
 extern MagickExport const char
-  *GetMagickCopyright(void),
-  *GetMagickVersion(unsigned long *),
-  *GetMagickWebSite(void);
+  *GetMagickCopyright(void) MAGICK_FUNC_CONST,
+  *GetMagickVersion(unsigned long *) MAGICK_FUNC_CONST,
+  *GetMagickWebSite(void) MAGICK_FUNC_CONST;
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

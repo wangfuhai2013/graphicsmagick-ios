@@ -1,17 +1,11 @@
 /*
-  Copyright (C) 2012-2014 GraphicsMagick Group
- 
+  Copyright (C) 2012-2022 GraphicsMagick Group
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 
-  Library symbol name-scoping support.     
-
-  Obtained via:                                          
-
-  nm -p wand/.libs/libGraphicsMagickWand.a | grep ' T ' | egrep -vi '(Gm)|(lt_)' | \
-  awk '{ printf("#define %s Gm%s\n", $3, $3); }' | sort > wand/wand_symbols.h
-
+  Library symbol name-scoping support.
 */
 
 #if !defined(_MAGICK_WAND_SYMBOLS_H)
@@ -34,6 +28,7 @@
 #define MagickAnimateImages GmMagickAnimateImages
 #define MagickAnnotateImage GmMagickAnnotateImage
 #define MagickAppendImages GmMagickAppendImages
+#define MagickAutoOrientImage GmMagickAutoOrientImage
 #define MagickAverageImages GmMagickAverageImages
 #define MagickBlackThresholdImage GmMagickBlackThresholdImage
 #define MagickBlurImage GmMagickBlurImage
@@ -41,6 +36,7 @@
 #define MagickCdlImage GmMagickCdlImage
 #define MagickCharcoalImage GmMagickCharcoalImage
 #define MagickChopImage GmMagickChopImage
+#define MagickClearException GmMagickClearException
 #define MagickClipImage GmMagickClipImage
 #define MagickClipPathImage GmMagickClipPathImage
 #define MagickCloneDrawingWand GmMagickCloneDrawingWand
@@ -212,16 +208,17 @@
 #define MagickGetImageFuzz GmMagickGetImageFuzz
 #define MagickGetImageGamma GmMagickGetImageGamma
 #define MagickGetImageGeometry GmMagickGetImageGeometry
-#define MagickGetImageGravity GmMagickGetImageGravity
 #define MagickGetImage GmMagickGetImage
+#define MagickGetImageGravity GmMagickGetImageGravity
 #define MagickGetImageGreenPrimary GmMagickGetImageGreenPrimary
 #define MagickGetImageHeight GmMagickGetImageHeight
 #define MagickGetImageHistogram GmMagickGetImageHistogram
 #define MagickGetImageIndex GmMagickGetImageIndex
 #define MagickGetImageInterlaceScheme GmMagickGetImageInterlaceScheme
 #define MagickGetImageIterations GmMagickGetImageIterations
-#define MagickGetImageMatte GmMagickGetImageMatte
 #define MagickGetImageMatteColor GmMagickGetImageMatteColor
+#define MagickGetImageMatte GmMagickGetImageMatte
+#define MagickGetImageOrientation GmMagickGetImageOrientation
 #define MagickGetImagePage GmMagickGetImagePage
 #define MagickGetImagePixels GmMagickGetImagePixels
 #define MagickGetImageProfile GmMagickGetImageProfile
@@ -246,9 +243,14 @@
 #define MagickGetSize GmMagickGetSize
 #define MagickGetVersion GmMagickGetVersion
 #define MagickHaldClutImage GmMagickHaldClutImage
+#define MagickHasColormap GmMagickHasColormap
 #define MagickHasNextImage GmMagickHasNextImage
 #define MagickHasPreviousImage GmMagickHasPreviousImage
 #define MagickImplodeImage GmMagickImplodeImage
+#define MagickIsGrayImage GmMagickIsGrayImage
+#define MagickIsMonochromeImage GmMagickIsMonochromeImage
+#define MagickIsOpaqueImage GmMagickIsOpaqueImage
+#define MagickIsPaletteImage GmMagickIsPaletteImage
 #define MagickLabelImage GmMagickLabelImage
 #define MagickLevelImageChannel GmMagickLevelImageChannel
 #define MagickLevelImage GmMagickLevelImage
@@ -269,6 +271,7 @@
 #define MagickNormalizeImage GmMagickNormalizeImage
 #define MagickOilPaintImage GmMagickOilPaintImage
 #define MagickOpaqueImage GmMagickOpaqueImage
+#define MagickOperatorImageChannel GmMagickOperatorImageChannel
 #define MagickPingImage GmMagickPingImage
 #define MagickPreviewImages GmMagickPreviewImages
 #define MagickPreviousImage GmMagickPreviousImage
@@ -286,6 +289,7 @@
 #define MagickReduceNoiseImage GmMagickReduceNoiseImage
 #define MagickRelinquishMemory GmMagickRelinquishMemory
 #define MagickRemoveImage GmMagickRemoveImage
+#define MagickRemoveImageOption GmMagickRemoveImageOption
 #define MagickRemoveImageProfile GmMagickRemoveImageProfile
 #define MagickResampleImage GmMagickResampleImage
 #define MagickResetIterator GmMagickResetIterator
@@ -315,15 +319,17 @@
 #define MagickSetImageFormat GmMagickSetImageFormat
 #define MagickSetImageFuzz GmMagickSetImageFuzz
 #define MagickSetImageGamma GmMagickSetImageGamma
-#define MagickSetImageGravity GmMagickSetImageGravity
+#define MagickSetImageGeometry GmMagickSetImageGeometry
 #define MagickSetImage GmMagickSetImage
+#define MagickSetImageGravity GmMagickSetImageGravity
 #define MagickSetImageGreenPrimary GmMagickSetImageGreenPrimary
 #define MagickSetImageIndex GmMagickSetImageIndex
 #define MagickSetImageInterlaceScheme GmMagickSetImageInterlaceScheme
 #define MagickSetImageIterations GmMagickSetImageIterations
-#define MagickSetImageMatte GmMagickSetImageMatte
 #define MagickSetImageMatteColor GmMagickSetImageMatteColor
+#define MagickSetImageMatte GmMagickSetImageMatte
 #define MagickSetImageOption GmMagickSetImageOption
+#define MagickSetImageOrientation GmMagickSetImageOrientation
 #define MagickSetImagePage GmMagickSetImagePage
 #define MagickSetImagePixels GmMagickSetImagePixels
 #define MagickSetImageProfile GmMagickSetImageProfile
@@ -413,3 +419,11 @@
 
 #endif /* defined(PREFIX_MAGICK_SYMBOLS) */
 #endif /* defined(_MAGICK_WAND_SYMBOLS_H) */
+
+/*
+ * Local Variables:
+ * mode: c
+ * c-basic-offset: 2
+ * fill-column: 78
+ * End:
+ */

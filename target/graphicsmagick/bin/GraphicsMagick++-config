@@ -21,25 +21,25 @@ fi
 while test $# -gt 0; do
   case $1 in
     --prefix)
-      echo /Users/zoujiaqing/Projects/graphicsmagick/target/graphicsmagick
+      echo /Users/wang/data/SDK/graphicsmagick-ios/target/graphicsmagick
       ;;
     --exec-prefix)
-      echo /Users/zoujiaqing/Projects/graphicsmagick/target/graphicsmagick
+      echo /Users/wang/data/SDK/graphicsmagick-ios/target/graphicsmagick
       ;;
     --version)
-      echo 1.3.26
+      echo 1.3.38
       ;;
     --cppflags)
-      echo '-I/Users/zoujiaqing/Projects/graphicsmagick/target/graphicsmagick/include/GraphicsMagick'
+      echo '-I/Users/wang/data/SDK/graphicsmagick-ios/target/graphicsmagick/include/GraphicsMagick'
       ;;
     --cxxflags)
       echo ''
       ;;
     --ldflags)
-      echo '-L/Users/zoujiaqing/Projects/graphicsmagick/target/graphicsmagick/lib -L/Users/zoujiaqing/Projects/graphicsmagick/target/libs/jpeg_x86_64_dylib/ -L/Users/zoujiaqing/Projects/graphicsmagick/target/libs/png_x86_64_dylib/ -L/Users/zoujiaqing/Projects/graphicsmagick/target/libs/tiff_x86_64_dylib/ -L/Users/zoujiaqing/Projects/graphicsmagick/target/libs -L/usr/local/opt/freetype/lib'
+      echo '-L/Users/wang/data/SDK/graphicsmagick-ios/target/graphicsmagick/lib -L/Users/wang/data/SDK/graphicsmagick-ios/target/libs/jpeg_x86_64_dylib/ -L/Users/wang/data/SDK/graphicsmagick-ios/target/libs/png_x86_64_dylib/ -L/Users/wang/data/SDK/graphicsmagick-ios/target/libs/tiff_x86_64_dylib/ -L/Users/wang/data/SDK/graphicsmagick-ios/target/libs'
       ;;
     --libs)
-      echo '-lGraphicsMagick++ -lGraphicsMagick -llcms2 -ltiff -lfreetype -ljpeg -lpng16 -lz -lm'
+      echo '-lGraphicsMagick++ -lGraphicsMagick -ltiff -ljpeg -lpng16 -lxml2 -lz -lm'
       ;;
     *)
       echo "${usage}" 1>&2

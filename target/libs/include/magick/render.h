@@ -1,11 +1,11 @@
 /*
-  Copyright (C) 2003 - 2009 GraphicsMagick Group
+  Copyright (C) 2003 - 2020 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   Drawing methods.
 */
 #ifndef _MAGICK_RENDER_H
@@ -164,6 +164,8 @@ typedef struct _ElementReference
     *next;
 } ElementReference;
 
+struct _DrawInfoExtra;  /* forward decl.; see member "extra" below */
+
 typedef struct _DrawInfo
 {
   char
@@ -252,8 +254,20 @@ typedef struct _DrawInfo
   double
     *dash_pattern; /* Terminated by value 0.0 (i.e. < MagickEpsilon)*/
 
+#if 0
   char
     *clip_path;
+#endif
+  /*
+    Allow for expansion of DrawInfo without increasing its size.  The
+    internals are defined only in render.c.  Clients outside of render.c
+    can access the internals via the provided access functions (see below).
+
+    This location in DrawInfo used to be occupied by char *clip_path. The
+    clip_path member now lives in _DrawInfoExtra.
+  */
+  struct _DrawInfoExtra
+    *extra;
 
   SegmentInfo
     bounds;
@@ -266,7 +280,26 @@ typedef struct _DrawInfo
 
   unsigned int
     render,
-    unused1;  /* Spare. Was long-deprecated 'debug' */
+    /*
+      Bit fields in flags:
+
+        Bit 0: should this DrawInfo should be drawn as:
+          0:  normal (original behavior)
+          1:  SVG compliant
+        Bit 1: is the DrawInfo a clipping path:
+          0:  is not a clipping path
+          1:  is a clipping path
+
+      Access to these bits should be through functions (defined in render.c):
+        IsDrawInfoClippingPath()
+        IsDrawInfoSVGCompliant()
+        IsDrawInfoSVGCompliantClippingPath()
+        SetDrawInfoClippingPath()
+        SetDrawInfoSVGCompliant()
+
+      At the present time the SVG compliance bit only affects how clipping paths are drawn.
+    */
+    flags;  /* previously "unused1" */
 
   ElementReference
     element_reference;
@@ -275,16 +308,6 @@ typedef struct _DrawInfo
     signature;
 } DrawInfo;
 
-typedef struct _ElementInfo
-{
-  double
-    cx,
-    cy,
-    major,
-    minor,
-    angle;
-} ElementInfo;
-
 typedef struct _PointInfo
 {
   double
@@ -292,23 +315,9 @@ typedef struct _PointInfo
     y;
 } PointInfo;
 
-typedef struct _PrimitiveInfo
-{
-  PointInfo
-    point;
-
-  unsigned long
-    coordinates;
-
-  PrimitiveType
-    primitive;
-
-  PaintMethod
-    method;
-
-  char
-    *text;
-} PrimitiveInfo;
+#if defined(MAGICK_IMPLEMENTATION)
+#  include "magick/render-private.h"
+#endif /* if defined(MAGICK_IMPLEMENTATION) */
 
 typedef struct _TypeMetric
 {
@@ -347,6 +356,14 @@ extern MagickExport MagickPassFail
 extern MagickExport void
   DestroyDrawInfo(DrawInfo *),
   GetDrawInfo(const ImageInfo *,DrawInfo *);
+
+/* provide public access to the clip_path member of DrawInfo */
+extern MagickExport char
+  **DrawInfoGetClipPath(const DrawInfo *) MAGICK_FUNC_PURE;
+
+/* provide public access to the composite_path member of DrawInfo */
+extern MagickExport char
+  **DrawInfoGetCompositePath(const DrawInfo *) MAGICK_FUNC_PURE;
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

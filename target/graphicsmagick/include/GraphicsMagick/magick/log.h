@@ -1,15 +1,17 @@
 /*
-  Copyright (C) 2003 - 2014 GraphicsMagick Group
+  Copyright (C) 2003 - 2020 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   Log methods.
 */
 #ifndef _MAGICK_LOG_H
 #define _MAGICK_LOG_H
+
+#include "magick/error.h"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -45,7 +47,7 @@ extern "C" {
 
 /* NOTE: any changes to this effect PerlMagick */
 typedef enum
-{ 
+{
   UndefinedEventMask     = 0x00000000,
   NoEventsMask           = 0x00000000,
   ConfigureEventMask     = 0x00000001,
@@ -71,39 +73,53 @@ typedef enum
   AllEventsMask          = 0x7FFFFFFF
 } LogEventType;
 
+/*
+  Typedef declarations.
+*/
+typedef enum
+{
+  DisabledOutput         = 0x0000,
+  UndefinedOutput        = 0x0000,
+  StdoutOutput           = 0x0001,
+  StderrOutput           = 0x0002,
+  XMLFileOutput          = 0x0004,
+  TXTFileOutput          = 0x0008,
+  Win32DebugOutput       = 0x0010,
+  Win32EventlogOutput    = 0x0020,
+  MethodOutput           = 0x0040
+} LogOutputType;
+
 typedef void
-  (*LogMethod)(const ExceptionType,const char *);
+  (*LogMethod)(const ExceptionType type,const char *text);
 
 /*
   Method declarations.
 */
 extern MagickExport MagickBool
-  IsEventLogging(void),
+  IsEventLogging(void) MAGICK_FUNC_PURE,
   LogMagickEvent(const ExceptionType type,
     const char *module,const char *function,const unsigned long line,
     const char *format,...) MAGICK_ATTRIBUTE((__format__ (__printf__,5,6))),
   LogMagickEventList(const ExceptionType type,
     const char *module,const char *function,const unsigned long line,
-    const char *format,va_list operands);
+    const char *format,va_list operands) MAGICK_ATTRIBUTE((__format__ (__printf__,5,0)));
 
 extern MagickExport unsigned long
   SetLogEventMask(const char *events);
 
 extern MagickExport void
+  SetLogDefaultEventType(const char *events),
+  SetLogDefaultGenerations(const unsigned long generations),
+  SetLogDefaultLimit(const unsigned long limit),
+  SetLogDefaultFileName( const char *filename ),
+  SetLogDefaultFormat( const char *format ),
+  SetLogDefaultLogMethod(const LogMethod method),
+  SetLogDefaultOutputType(const LogOutputType output_type),
   SetLogFormat(const char *format),
   SetLogMethod(LogMethod);
 
 #if defined(MAGICK_IMPLEMENTATION)
-
-extern MagickExport void
-  DestroyLogInfo(void);
-
-extern MagickPassFail
-  InitializeLogInfo(void);
-
-extern MagickPassFail
-  InitializeLogInfoPost(void);
-
+#  include "magick/log-private.h"
 #endif /* MAGICK_IMPLEMENTATION */
 
 #if defined(__cplusplus) || defined(c_plusplus)

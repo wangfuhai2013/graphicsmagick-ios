@@ -1,11 +1,11 @@
 /*
-  Copyright (C) 2003-2009 GraphicsMagick Group
+  Copyright (C) 2003-2020 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   Magick registry methods.
 */
 #ifndef _MAGICK_REGISTRY_H
@@ -44,11 +44,7 @@ extern MagickExport void
      ExceptionInfo *exception);
 
 #if defined(MAGICK_IMPLEMENTATION)
-
-extern void
-  DestroyMagickRegistry(void),
-  InitializeMagickRegistry(void);
-
+#  include "magick/registry-private.h"
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)

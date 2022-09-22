@@ -1,4 +1,4 @@
-prefix=/Users/zoujiaqing/Projects/graphicsmagick/target/libtiff
+prefix=/Users/wang/data/SDK/graphicsmagick-ios/target/libtiff
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
@@ -7,5 +7,5 @@ Name: libtiff
 Description:  Tag Image File Format (TIFF) library.
 Version: 4.0.8
 Libs: -L${libdir} -ltiff
-Libs.private: -ljpeg -lz 
+Libs.private: -lz 
 Cflags: -I${includedir}

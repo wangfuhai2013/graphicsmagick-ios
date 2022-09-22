@@ -1,12 +1,12 @@
 /*
-  Copyright (C) 2003 - 2012 GraphicsMagick Group
+  Copyright (C) 2003 - 2020 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   GraphicsMagick Progress Monitor Methods.
 */
 #ifndef _MAGICK_MONITOR_H
@@ -22,7 +22,7 @@ extern "C" {
   typedef MagickPassFail
   (*MonitorHandler)(const char *text,const magick_int64_t quantum,
                     const magick_uint64_t span,ExceptionInfo *exception);
-  
+
   /*
     Monitor declarations.
   */
@@ -32,13 +32,17 @@ extern "C" {
   extern MagickExport MagickPassFail
   MagickMonitor(const char *text,
                 const magick_int64_t quantum,const magick_uint64_t span,
-                ExceptionInfo *exception);
+                ExceptionInfo *exception) MAGICK_FUNC_DEPRECATED;
 
   extern MagickExport MagickPassFail
   MagickMonitorFormatted(const magick_int64_t quantum,
                          const magick_uint64_t span,
                          ExceptionInfo *exception,
                          const char *format,...) MAGICK_ATTRIBUTE((__format__ (__printf__,4,5)));
+
+#if defined(MAGICK_IMPLEMENTATION)
+#  include "magick/monitor-private.h"
+#endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

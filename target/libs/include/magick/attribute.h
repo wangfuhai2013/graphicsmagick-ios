@@ -1,11 +1,11 @@
 /*
   Copyright (C) 2003 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   Methods to Get/Set/Destroy Image Text Attributes.
 */
 #ifndef _MAGICK_ATTRIBUTE_H
@@ -47,19 +47,7 @@ extern MagickExport void
   DestroyImageAttributes(Image *image);
 
 #if defined(MAGICK_IMPLEMENTATION)
-
-/* Assign value of attribute to double if attribute exists for key */
-#define MagickAttributeToDouble(image,key,variable) \
-{ \
-    const ImageAttribute \
-      *attribute; \
-\
-  if ((attribute=GetImageAttribute(image,key))) \
-  { \
-    variable=strtod(attribute->value,(char **) NULL); \
-  } \
-}
-
+#  include "magick/attribute-private.h"
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)

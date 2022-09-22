@@ -1,10 +1,10 @@
 /*
-  Copyright (C) 2003 - 2013 GraphicsMagick Group
- 
+  Copyright (C) 2003 - 2020 GraphicsMagick Group
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   GraphicsMagick types typedefs.
 
   GraphicsMagick is expected to compile with any C '89 ANSI C compiler
@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 /*
-  Assign ANSI C stdint.h-like typedefs based on the sizes of native types
+  Assign ANSI C'99 stdint.h-like typedefs based on the sizes of native types
   magick_int8_t   --                       -128 to 127
   magick_uint8_t  --                          0 to 255
   magick_int16_t  --                    -32,768 to 32,767
@@ -40,15 +40,31 @@ extern "C" {
   magick_uintptr_t -- unsigned type for storing a pointer value ("%tu")
                                               0 to UINTPTR_MAX
 
-  ANSI C '99 stddef.h-like types
+  ANSI C '89 stddef.h-like types
   size_t           -- unsigned type representing sizes of objects ("%zu")
                                               0 to SIZE_MAX
-  magick_ptrdiff_t -- signed type for subtracting two pointers ("%td")
+  ptrdiff_t -- signed type for subtracting two pointers ("%td")
                                     PTRDIFF_MIN to PTRDIFF_MAX
 
-  EEE Std 1003.1, 2004 types
+  IEEE Std 1003.1 (1990), 2004 types.  Not part of ANSI C!
   ssize_t          -- signed type for a count of bytes or an error indication ("%zd")
                                               ? to SSIZE_MAX
+ Useful inttypes.h "printf" formatters:
+
+  magick_int8_t PRId8
+  magick_uint8_t PRIu8
+  magick_int16_t PRId16
+  magick_uint16_t PRIu16
+  magick_int32_t PRId32
+  magick_uint32_t PRIu32
+  magick_int64_t PRId64
+  magick_uint64_t PRIu64
+  magick_uintmax_t ju
+  magick_uintptr_t tu
+  size_t zu
+  ptrdiff_t td
+  ssize_t zd?
+
 */
 
 #if (defined(WIN32) || defined(WIN64)) && \
@@ -63,14 +79,17 @@ extern "C" {
   typedef unsigned short magick_uint16_t;
 
   typedef signed int  magick_int32_t;
-#  define MAGICK_INT32_F ""
   typedef unsigned int magick_uint32_t;
-#  define MAGICK_UINT32_F ""
 
   typedef signed __int64  magick_int64_t;
-# define MAGICK_INT64_F "I64"
   typedef unsigned __int64 magick_uint64_t;
-# define MAGICK_UINT64_F "I64"
+
+#  if defined(MAGICK_IMPLEMENTATION)
+
+#  define MAGICK_INT32_F ""
+#  define MAGICK_UINT32_F ""
+#  define MAGICK_INT64_F "I64"
+#  define MAGICK_UINT64_F "I64"
 
   typedef magick_uint64_t magick_uintmax_t;
 
@@ -89,6 +108,8 @@ extern "C" {
 #  define MAGICK_SSIZE_T long
 #  endif // defined(WIN64)
 
+#endif /* if defined(MAGICK_IMPLEMENTATION) */
+
 #else
 
   /* The following typedefs are subtituted when using Unixish configure */
@@ -99,13 +120,16 @@ extern "C" {
   typedef unsigned short magick_uint16_t;
 
   typedef signed int  magick_int32_t;
-#  define MAGICK_INT32_F ""
   typedef unsigned int magick_uint32_t;
-#  define MAGICK_UINT32_F ""
 
   typedef signed long  magick_int64_t;
-#  define MAGICK_INT64_F "l"
   typedef unsigned long magick_uint64_t;
+
+#  if defined(MAGICK_IMPLEMENTATION)
+
+#  define MAGICK_INT32_F ""
+#  define MAGICK_UINT32_F ""
+#  define MAGICK_INT64_F "l"
 #  define MAGICK_UINT64_F "l"
 
   typedef unsigned long magick_uintmax_t;
@@ -120,11 +144,16 @@ extern "C" {
 #  define MAGICK_SSIZE_T_F "l"
 #  define MAGICK_SSIZE_T signed long
 
+#endif /* defined(MAGICK_IMPLEMENTATION) */
+
 #endif
 
   /* 64-bit file and blob offset type */
   typedef magick_int64_t magick_off_t;
-#define MAGICK_OFF_F MAGICK_INT64_F
+
+#if defined(MAGICK_IMPLEMENTATION)
+#  define MAGICK_OFF_F MAGICK_INT64_F
+#endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

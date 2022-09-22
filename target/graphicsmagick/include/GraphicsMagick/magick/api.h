@@ -2,12 +2,18 @@
   Copyright (C) 2003 - 2012 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   GraphicsMagick Application Programming Interface declarations.
+
+  Please notice that the header inclusion is designed such that the compiler
+  include path should include the parent directory of 'magick' and should not
+  include the directly where api.h resides.  If the include path includes the
+  directory where api.h resides, then there may be conflicts with other
+  headers.
 
 */
 
@@ -75,6 +81,7 @@ extern "C" {
 #include "magick/effect.h"
 #include "magick/enhance.h"
 #include "magick/error.h"
+#include "magick/enum_strings.h"
 #include "magick/fx.h"
 #include "magick/gem.h"
 #include "magick/gradient.h"

@@ -9,13 +9,13 @@ armflags () {
 	export ARM_CFLAGS="-arch $1"
 	export ARM_CFLAGS="$ARM_CFLAGS -I$IOSSDKROOT/usr/include"
 	export ARM_CFLAGS="$ARM_CFLAGS -isysroot $IOSSDKROOT"
-	export ARM_CFLAGS="$ARM_CFLAGS -miphoneos-version-min=$SDKVER"
+	#export ARM_CFLAGS="$ARM_CFLAGS -miphoneos-version-min=$SDKVER"
 	export ARM_CXXFLAGS="-arch $1"
 	export ARM_CXXFLAGS="$ARM_CFLAGS -I$IOSSDKROOT/usr/include"
 	export ARM_CXXFLAGS="$ARM_CFLAGS -isysroot $IOSSDKROOT"
-	export ARM_CXXFLAGS="$ARM_CFLAGS -miphoneos-version-min=$SDKVER"
+	#export ARM_CXXFLAGS="$ARM_CFLAGS -miphoneos-version-min=$SDKVER"
 	export ARM_LDFLAGS="-arch $1 -isysroot $IOSSDKROOT"
-	export ARM_LDFLAGS="$ARM_LDFLAGS -miphoneos-version-min=$SDKVER"
+	#export ARM_LDFLAGS="$ARM_LDFLAGS -miphoneos-version-min=$SDKVER"
 	
 	export ARM_CFLAGS="$ARM_CFLAGS -O3"
 	# uncomment this line if you want debugging stuff
@@ -38,7 +38,7 @@ intelflags () {
 	export INTEL_LD=$(xcrun -find -sdk iphonesimulator ld)
 	
 	export INTEL_CFLAGS="-arch $1"
-	export INTEL_CFLAGS="$INTEL_CFLAGS -I$SIMSDKROOT/usr/include"
+	export INTEL_CFLAGS="$INTEL_CFLAGS -isysroot $SIMSDKROOT -I$SIMSDKROOT/usr/include"
 	
 	# apply INTEL_CC values
 	export CC="$INTEL_CC"

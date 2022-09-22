@@ -1,11 +1,11 @@
 /*
-  Copyright (C) 2003 - 2009 GraphicsMagick Group
+  Copyright (C) 2003 - 2020 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   GraphicsMagick Image Analysis Methods.
 */
 #ifndef _MAGICK_ANALYZE_H
@@ -30,7 +30,7 @@ typedef struct _ImageCharacteristics
 /* Functions which return unsigned int to indicate operation pass/fail */
 extern MagickExport MagickPassFail
   GetImageCharacteristics(const Image *image,ImageCharacteristics *characteristics,
-			  const MagickBool optimize,ExceptionInfo *exception);
+                          const MagickBool optimize,ExceptionInfo *exception);
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *);
@@ -45,11 +45,6 @@ extern MagickExport ImageType
 
 extern MagickExport RectangleInfo
   GetImageBoundingBox(const Image *,ExceptionInfo *exception);
-
-#if defined(MAGICK_IMPLEMENTATION)
-
-
-#endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

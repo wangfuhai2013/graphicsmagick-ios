@@ -1,11 +1,11 @@
 /*
-  Copyright (C) 2003 - 2015 GraphicsMagick Group
+  Copyright (C) 2003 - 2022 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   Resource methods.
 */
 #ifndef _MAGICK_RESOURCE_H
@@ -24,11 +24,12 @@ typedef enum
   DiskResource,        /* Pixel cache total disk space (Gigabytes) */
   FileResource,        /* Pixel cache number of open files (Files) */
   MapResource,         /* Pixel cache total file memory-mapping (Megabytes) */
-  MemoryResource,      /* Maximum pixel cache heap memory allocations (Megabytes) */
+  MemoryResource,      /* Maximum heap memory (e.g. malloc) allocations (Megabytes) */
   PixelsResource,      /* Maximum number of pixels in single image (Pixels) */
   ThreadsResource,     /* Maximum number of worker threads */
   WidthResource,       /* Maximum pixel width of an image (Pixels) */
-  HeightResource       /* Maximum pixel height of an image (Pixels) */
+  HeightResource,      /* Maximum pixel height of an image (Pixels) */
+  ReadResource         /* Maximum amount of uncompressed file data which may be read */
 } ResourceType;
 
 /*

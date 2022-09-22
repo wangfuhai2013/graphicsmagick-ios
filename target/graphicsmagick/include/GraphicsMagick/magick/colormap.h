@@ -1,12 +1,12 @@
 /*
-  Copyright (C) 2003 - 2009 GraphicsMagick Group
+  Copyright (C) 2003 - 2019 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   GraphicsMagick Colormap Methods
 */
 #ifndef _MAGICK_COLORMAP_H
@@ -23,23 +23,15 @@ extern "C" {
 #include "magick/error.h"
 
 extern MagickExport MagickPassFail
-  AllocateImageColormap(Image *,const unsigned long),
+  AllocateImageColormap(Image *,const unsigned long colors),
   CycleColormapImage(Image *image,const int amount),
+  ReallocateImageColormap(Image *,const unsigned int colors),
   ReplaceImageColormap(Image *image,const PixelPacket *colormap,
     const unsigned int colors),
-  SortColormapByIntensity(Image *);
+  SortColormapByIntensity(Image *image);
 
 #if defined(MAGICK_IMPLEMENTATION)
-
-#define VerifyColormapIndex(image,index) \
-{ \
-  if (index >= image->colors) \
-    index=MagickConstrainColormapIndex(image,index); \
-}
-
-extern MagickExport unsigned int
-  MagickConstrainColormapIndex(Image *image, unsigned int index);
-
+#  include "magick/colormap-private.h"
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)

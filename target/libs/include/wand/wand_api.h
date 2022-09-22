@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003-2009 GraphicsMagick Group
+  Copyright (C) 2003-2018 GraphicsMagick Group
 
   GraphicsMagick Wand API Methods
 */
@@ -10,8 +10,8 @@
 extern "C" {
 #endif
 
-#include <wand/wand_symbols.h>
 #include <magick/api.h>
+#include <wand/wand_symbols.h>
 
 #if defined(_VISUALC_)
 
@@ -20,7 +20,7 @@ extern "C" {
  * mutli-threaded DLLs using the multithreaded runtime DLLs.
  **/
 #  if defined(_MT) && defined(_DLL) && !defined(_LIB)
-#    pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
+#    pragma warning( disable: 4273 )    /* Disable the stupid dll linkage warnings */
 #    if !defined(_WANDLIB_)
 #      define WandExport __declspec(dllimport)
 #    else

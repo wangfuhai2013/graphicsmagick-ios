@@ -17,14 +17,14 @@ old_library='libGraphicsMagick.a'
 inherited_linker_flags=' '
 
 # Libraries that this one depends upon.
-dependency_libs=' -L/Users/zoujiaqing/Projects/graphicsmagick/target/libs/jpeg_x86_64_dylib/ -L/Users/zoujiaqing/Projects/graphicsmagick/target/libs/png_x86_64_dylib/ -L/Users/zoujiaqing/Projects/graphicsmagick/target/libs/tiff_x86_64_dylib/ -L/Users/zoujiaqing/Projects/graphicsmagick/target/libs -L/usr/local/opt/freetype/lib -llcms2 -ltiff -lfreetype -ljpeg -lpng16 -lz -lm'
+dependency_libs=' -L/Users/wang/data/SDK/graphicsmagick-ios/target/libs/jpeg_x86_64_dylib/ -L/Users/wang/data/SDK/graphicsmagick-ios/target/libs/png_x86_64_dylib/ -L/Users/wang/data/SDK/graphicsmagick-ios/target/libs/tiff_x86_64_dylib/ -L/Users/wang/data/SDK/graphicsmagick-ios/target/libs -ltiff -ljpeg -lpng16 -lxml2 -lz -lm'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
 
 # Version information for libGraphicsMagick.
-current=19
-age=16
+current=27
+age=24
 revision=0
 
 # Is this an already installed library?
@@ -38,4 +38,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/Users/zoujiaqing/Projects/graphicsmagick/target/graphicsmagick/lib'
+libdir='/Users/wang/data/SDK/graphicsmagick-ios/target/graphicsmagick/lib'

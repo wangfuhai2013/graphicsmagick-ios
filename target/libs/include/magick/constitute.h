@@ -1,11 +1,11 @@
 /*
-  Copyright (C) 2003 - 2009 GraphicsMagick Group
+  Copyright (C) 2003 - 2020 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
- 
+
   This program is covered by multiple licenses, which are described in
   Copyright.txt. You should have received a copy of Copyright.txt with this
   package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
- 
+
   GraphicsMagick Constitute Methods.
 */
 #ifndef _MAGICK_CONSTITUTE_H
@@ -189,16 +189,10 @@ extern MagickExport MagickPassFail
     double *min, double *max);
 
 extern MagickExport unsigned int
-  MagickGetQuantumSamplesPerPixel(const QuantumType quantum_type);
+  MagickGetQuantumSamplesPerPixel(const QuantumType quantum_type) MAGICK_FUNC_CONST;
 
 #if defined(MAGICK_IMPLEMENTATION)
-
-extern MagickExport void
-  DestroyConstitute(void);
-
-extern MagickPassFail
-  InitializeConstitute(void);
-
+#  include "magick/constitute-private.h"
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)

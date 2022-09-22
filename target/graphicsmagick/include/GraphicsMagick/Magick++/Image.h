@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999 - 2015
+// Copyright Bob Friesenhahn, 1999 - 2020
 //
 // Definition of Image, the representation of a single image in Magick++
 //
@@ -46,6 +46,35 @@ namespace Magick
   int MagickDLLDecl operator <= ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
 
+  //
+  // Logging defaults initialization routines.  These are
+  // pass-throughs into the equivalent C library functions.  The
+  // purpose of these routines is to provide a program with an
+  // alternative to the default "log.mgk" based initialization.
+  //
+
+  // Specify default events which will result in a log event (comma-separated list)
+  void MagickDLLDecl SetLogDefaultEventType(const std::string &events_);
+
+  // Specify default maximum log file generations before overwriting the first name.
+  void MagickDLLDecl SetLogDefaultGenerations(const unsigned int generations_);
+
+  // Specify default maximum number of logging events before creating a new log file.
+  void MagickDLLDecl SetLogDefaultLimit(const unsigned int limit_);
+
+  // Specify the file name, or file path, to be written to for each log event
+  void MagickDLLDecl SetLogDefaultFileName(const std::string &filename_);
+
+  // Specify default log format using special format characters as used by "log.mgk"
+  void MagickDLLDecl SetLogDefaultFormat(const std::string &format_);
+
+  // Specify default C-language call-back function to be invoked for each log event
+  // FIXME: Develop an improved interface more suitable for C++
+  void MagickDLLDecl SetLogDefaultLogMethod(const Magick::LogMethod method_);
+
+  // Specify default logging output type/destination.
+  void MagickDLLDecl SetLogDefaultOutputType(const Magick::LogOutputType output_type_);
+
   // C library initialization routine
   void MagickDLLDecl InitializeMagick(const char *path_);
 
@@ -77,7 +106,7 @@ namespace Magick
     // in-memory BLOB
     Image ( const Blob &blob_, const Geometry &size,
             const unsigned int depth_,
-	    const std::string &magick_ );
+            const std::string &magick_ );
     // Construct Image of specified size, and format from in-memory
     // BLOB
     Image ( const Blob &blob_, const Geometry &size,
@@ -145,22 +174,28 @@ namespace Magick
 
     // Annotate using specified text, and placement location
     void            annotate ( const std::string &text_,
-			       const Geometry &location_ );
+                               const Geometry &location_ );
     // Annotate using specified text, bounding area, and placement
     // gravity
     void            annotate ( const std::string &text_,
-			       const Geometry &boundingArea_,
-			       const GravityType gravity_ );
+                               const Geometry &boundingArea_,
+                               const GravityType gravity_ );
     // Annotate with text using specified text, bounding area,
     // placement gravity, and rotation.
     void            annotate ( const std::string &text_,
-			       const Geometry &boundingArea_,
-			       const GravityType gravity_,
-			       const double degrees_ );
+                               const Geometry &boundingArea_,
+                               const GravityType gravity_,
+                               const double degrees_ );
     // Annotate with text (bounding area is entire image) and placement
     // gravity.
     void            annotate ( const std::string &text_,
-			       const GravityType gravity_ );
+                               const GravityType gravity_ );
+
+    // Orient image to be right-side up based on its current
+    // orientation attribute.  This allows the image to be viewed
+    // correctly when the orientation attribute is not available, or
+    // is not respected.
+    void            autoOrient( void );
 
     // Blur image with specified blur factor
     // The radius_ parameter specifies the radius of the Gaussian, in
@@ -209,15 +244,15 @@ namespace Magick
     void            colorize ( const unsigned int opacityRed_,
                                const unsigned int opacityGreen_,
                                const unsigned int opacityBlue_,
-			       const Color &penColor_ );
+                               const Color &penColor_ );
     // Colorize image with pen color, using specified percent opacity.
     void            colorize ( const unsigned int opacity_,
-			       const Color &penColor_ );
+                               const Color &penColor_ );
 
     // Apply a color matrix to the image channels.  The user supplied
     // matrix may be of order 1 to 5 (1x1 through 5x5).
     void            colorMatrix (const unsigned int order_,
-				 const double *color_matrix_);
+                                 const double *color_matrix_);
 
     // Comment image (add comment string to image)
     void            comment ( const std::string &comment_ );
@@ -230,17 +265,17 @@ namespace Magick
     // Compose an image onto another at specified offset and using
     // specified algorithm
     void            composite ( const Image &compositeImage_,
-				const int xOffset_,
-				const int yOffset_,
-				const CompositeOperator compose_
+                                const int xOffset_,
+                                const int yOffset_,
+                                const CompositeOperator compose_
                                 = InCompositeOp );
     void            composite ( const Image &compositeImage_,
-				const Geometry &offset_,
-				const CompositeOperator compose_
+                                const Geometry &offset_,
+                                const CompositeOperator compose_
                                 = InCompositeOp );
     void            composite ( const Image &compositeImage_,
-				const GravityType gravity_,
-				const CompositeOperator compose_
+                                const GravityType gravity_,
+                                const CompositeOperator compose_
                                 = InCompositeOp );
 
     // Contrast image (enhance intensity differences in image)
@@ -316,20 +351,20 @@ namespace Magick
     // Uses current fuzz setting when determining color match.
     void            floodFillColor( const unsigned int x_,
                                     const unsigned int y_,
-				    const Color &fillColor_ );
+                                    const Color &fillColor_ );
     void            floodFillColor( const Geometry &point_,
-				    const Color &fillColor_ );
+                                    const Color &fillColor_ );
 
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
     void            floodFillColor( const unsigned int x_,
                                     const unsigned int y_,
-				    const Color &fillColor_,
-				    const Color &borderColor_ );
+                                    const Color &fillColor_,
+                                    const Color &borderColor_ );
     void            floodFillColor( const Geometry &point_,
-				    const Color &fillColor_,
-				    const Color &borderColor_ );
+                                    const Color &fillColor_,
+                                    const Color &borderColor_ );
 
     // Floodfill pixels matching color (within fuzz factor) of target
     // pixel(x,y) with replacement opacity value using method.
@@ -343,20 +378,20 @@ namespace Magick
     // Uses current fuzz setting when determining color match.
     void            floodFillTexture( const unsigned int x_,
                                       const unsigned int y_,
-				      const Image &texture_ );
+                                      const Image &texture_ );
     void            floodFillTexture( const Geometry &point_,
-				      const Image &texture_ );
+                                      const Image &texture_ );
 
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
     void            floodFillTexture( const unsigned int x_,
                                       const unsigned int y_,
-				      const Image &texture_,
-				      const Color &borderColor_ );
+                                      const Image &texture_,
+                                      const Color &borderColor_ );
     void            floodFillTexture( const Geometry &point_,
-				      const Image &texture_,
-				      const Color &borderColor_ );
+                                      const Image &texture_,
+                                      const Color &borderColor_ );
 
     // Flop image (reflect each scanline in the horizontal direction)
     void            flop ( void );
@@ -365,14 +400,14 @@ namespace Magick
     void            frame ( const Geometry &geometry_ = frameGeometryDefault );
     void            frame ( const unsigned int width_,
                             const unsigned int height_,
-			    const int innerBevel_ = 6,
+                            const int innerBevel_ = 6,
                             const int outerBevel_ = 6 );
 
     // Gamma correct image
     void            gamma ( const double gamma_ );
     void            gamma ( const double gammaRed_,
-			    const double gammaGreen_,
-			    const double gammaBlue_ );
+                            const double gammaGreen_,
+                            const double gammaBlue_ );
 
     // Gaussian blur image
     // The number of neighbor pixels to be included in the convolution
@@ -431,9 +466,9 @@ namespace Magick
 
     // Floodfill designated area with replacement opacity value
     void            matteFloodfill ( const Color &target_ ,
-				     const unsigned int opacity_,
-				     const int x_, const int y_,
-				     const PaintMethod method_ );
+                                     const unsigned int opacity_,
+                                     const int x_, const int y_,
+                                     const PaintMethod method_ );
 
     // Filter image by replacing each pixel component with the median
     // color in a circular neighborhood
@@ -449,8 +484,8 @@ namespace Magick
     // current position corresponding to an argument range of 0 to 2.0
     // (1.0 for no change).
     void            modulate ( const double brightness_,
-			       const double saturation_,
-			       const double hue_ );
+                               const double saturation_,
+                               const double hue_ );
 
     // Motion blur image with specified blur factor
     // The radius_ parameter specifies the radius of the Gaussian, in
@@ -484,7 +519,7 @@ namespace Magick
 
     // Change color of opaque pixel to specified pen color.
     void            opaque ( const Color &opaqueColor_,
-			     const Color &penColor_ );
+                             const Color &penColor_ );
 
     // Ping is similar to read except only enough of the image is read
     // to determine the image columns, rows, and filesize.  Access the
@@ -532,7 +567,7 @@ namespace Magick
     // Raise image (lighten or darken the edges of an image to give a
     // 3-D raised or lowered effect)
     void            raise ( const Geometry &geometry_ = raiseGeometryDefault,
-			    const bool raisedFlag_ = false );
+                            const bool raisedFlag_ = false );
 
     // Random threshold image.
     //
@@ -553,33 +588,33 @@ namespace Magick
 
     // Read single image frame of specified size into current object
     void            read ( const Geometry &size_,
-			   const std::string &imageSpec_ );
+                           const std::string &imageSpec_ );
 
     // Read single image frame from in-memory BLOB
     void            read ( const Blob        &blob_ );
 
     // Read single image frame of specified size from in-memory BLOB
     void            read ( const Blob        &blob_,
-			   const Geometry    &size_ );
+                           const Geometry    &size_ );
 
     // Read single image frame of specified size and depth from
     // in-memory BLOB
     void            read ( const Blob         &blob_,
-			   const Geometry     &size_,
-			   const unsigned int depth_ );
+                           const Geometry     &size_,
+                           const unsigned int depth_ );
 
     // Read single image frame of specified size, depth, and format
     // from in-memory BLOB
     void            read ( const Blob         &blob_,
-			   const Geometry     &size_,
-			   const unsigned int depth_,
-			   const std::string  &magick_ );
+                           const Geometry     &size_,
+                           const unsigned int depth_,
+                           const std::string  &magick_ );
 
     // Read single image frame of specified size, and format from
     // in-memory BLOB
     void            read ( const Blob         &blob_,
-			   const Geometry     &size_,
-			   const std::string  &magick_ );
+                           const Geometry     &size_,
+                           const std::string  &magick_ );
 
     // Read single image frame from an array of raw pixels, with
     // specified storage type (ConstituteImage), e.g.
@@ -615,7 +650,7 @@ namespace Magick
     // number of columnms and rows)
     void            roll ( const Geometry &roll_ );
     void            roll ( const unsigned int columns_,
-			   const unsigned int rows_ );
+                           const unsigned int rows_ );
 
     // Rotate image counter-clockwise by specified number of degrees.
     void            rotate ( const double degrees_ );
@@ -635,12 +670,12 @@ namespace Magick
     // are homogeneous with the fuzzy c-means technique.  Also uses
     // QuantizeColorSpace and Verbose image attributes
     void            segment ( const double clusterThreshold_ = 1.0,
-			      const double smoothingThreshold_ = 1.5 );
+                              const double smoothingThreshold_ = 1.5 );
 
     // Shade image using distant light source
     void            shade ( const double azimuth_ = 30,
-			    const double elevation_ = 30,
-			    const bool   colorShading_ = false );
+                            const double elevation_ = 30,
+                            const bool   colorShading_ = false );
 
     // Sharpen pixels in image
     // The radius_ parameter specifies the radius of the Gaussian, in
@@ -657,7 +692,7 @@ namespace Magick
 
     // Shear image (create parallelogram by sliding image by X or Y axis)
     void            shear ( const double xShearAngle_,
-			    const double yShearAngle_ );
+                            const double yShearAngle_ );
 
     // Solarize image (similar to effect seen when exposing a
     // photographic film to light during the development process)
@@ -691,7 +726,7 @@ namespace Magick
     // Crop geometry is optional
     void            transform ( const Geometry &imageGeometry_ );
     void            transform ( const Geometry &imageGeometry_,
-				const Geometry &cropGeometry_  );
+                                const Geometry &cropGeometry_  );
 
     // Add matte image to image, setting pixels matching color to
     // transparent
@@ -740,10 +775,10 @@ namespace Magick
     // format and adjoin parameters.
     void            write ( Blob *blob_ );
     void            write ( Blob *blob_,
-			    const std::string &magick_ );
+                            const std::string &magick_ );
     void            write ( Blob *blob_,
-			    const std::string &magick_,
-			    const unsigned int depth_ );
+                            const std::string &magick_,
+                            const unsigned int depth_ );
 
     // Write single image frame to an array of pixels with storage
     // type specified by user (DispatchImage), e.g.
@@ -1073,7 +1108,7 @@ namespace Magick
     // Get/set pixel color at location x & y.
     void            pixelColor ( const unsigned int x_,
                                  const unsigned int y_,
-				 const Color &color_ );
+                                 const Color &color_ );
     Color           pixelColor ( const unsigned int x_,
                                  const unsigned int y_ ) const;
 
@@ -1286,14 +1321,14 @@ namespace Magick
     // transferred back to the image via syncPixels.  This method is
     // valid for DirectClass images.
     PixelPacket* getPixels ( const int x_, const int y_,
-			     const unsigned int columns_,
+                             const unsigned int columns_,
                              const unsigned int rows_ );
 
     // Allocates a pixel cache region to store image pixels as defined
     // by the region rectangle.  This area is subsequently transferred
     // from the pixel cache to the image via syncPixels.
     PixelPacket* setPixels ( const int x_, const int y_,
-			     const unsigned int columns_,
+                             const unsigned int columns_,
                              const unsigned int rows_ );
 
     // Transfers the image cache pixels to the image.
@@ -1303,13 +1338,13 @@ namespace Magick
     // into the image pixel cache of an image.
     // Used to support image decoders.
     void readPixels ( const QuantumType quantum_,
-		      const unsigned char *source_ );
+                      const unsigned char *source_ );
 
     // Transfers one or more pixel components from the image pixel
     // cache to a buffer or file.
     // Used to support image encoders.
     void writePixels ( const QuantumType quantum_,
-		       unsigned char *destination_ );
+                       unsigned char *destination_ );
 
     //////////////////////////////////////////////////////////////////////
     //

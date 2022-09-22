@@ -1,4 +1,4 @@
-prefix=/Users/zoujiaqing/Projects/graphicsmagick/target/libpng
+prefix=/Users/wang/data/SDK/graphicsmagick-ios/target/libpng
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include/libpng16

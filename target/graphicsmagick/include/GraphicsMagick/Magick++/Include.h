@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999 - 2015
+// Copyright Bob Friesenhahn, 1999 - 2020
 //
 // Inclusion of GraphicsMagick headers (with namespace magic)
 
@@ -205,7 +205,7 @@ namespace MagickLib
 
 #if defined(MAGICK_IMPLEMENTATION)
 namespace MagickLib
-{
+{ // This header is now also included by magick/api.h
 #  include "magick/enum_strings.h"
 }
 #endif
@@ -224,7 +224,7 @@ namespace Magick
   using MagickLib::UndefinedClass;
   using MagickLib::DirectClass;
   using MagickLib::PseudoClass;
-  
+
   // Channel types
   using MagickLib::ChannelType;
   using MagickLib::UndefinedChannel;
@@ -239,7 +239,7 @@ namespace Magick
   using MagickLib::MatteChannel;
   using MagickLib::AllChannels;
   using MagickLib::GrayChannel;
-  
+
   // Color-space types
   using MagickLib::ColorspaceType;
   using MagickLib::UndefinedColorspace;
@@ -262,7 +262,7 @@ namespace Magick
   using MagickLib::Rec601LumaColorspace;
   using MagickLib::Rec709LumaColorspace;
   using MagickLib::Rec709YCbCrColorspace;
-  
+
   // Composition operations
   using MagickLib::AddCompositeOp;
   using MagickLib::AtopCompositeOp;
@@ -313,7 +313,7 @@ namespace Magick
   using MagickLib::VividLightCompositeOp;
   using MagickLib::PinLightCompositeOp;
   using MagickLib::HardMixCompositeOp;
-  
+
   // Compression algorithms
   using MagickLib::CompressionType;
   using MagickLib::UndefinedCompression;
@@ -330,6 +330,8 @@ namespace Magick
   using MagickLib::JPEG2000Compression;
   using MagickLib::JBIG1Compression;
   using MagickLib::JBIG2Compression;
+  using MagickLib::ZSTDCompression;
+  using MagickLib::WebPCompression;
 
   using MagickLib::DisposeType;
   using MagickLib::UndefinedDispose;
@@ -473,7 +475,7 @@ namespace Magick
   using MagickLib::UndefinedRule;
   using MagickLib::EvenOddRule;
   using MagickLib::NonZeroRule;
-  
+
   // Filter types
   using MagickLib::FilterTypes;
   using MagickLib::UndefinedFilter;
@@ -520,7 +522,7 @@ namespace Magick
   using MagickLib::ColorSeparationType;
   using MagickLib::ColorSeparationMatteType;
   using MagickLib::OptimizeType;
-  
+
   // Interlace types
   using MagickLib::InterlaceType;
   using MagickLib::UndefinedInterlace;
@@ -564,7 +566,7 @@ namespace Magick
   using MagickLib::RightTopOrientation;
   using MagickLib::RightBottomOrientation;
   using MagickLib::LeftBottomOrientation;
-  
+
   // Paint methods
   using MagickLib::PaintMethod;
   using MagickLib::PointMethod;
@@ -671,7 +673,7 @@ namespace Magick
   using MagickLib::PerceptualIntent;
   using MagickLib::AbsoluteIntent;
   using MagickLib::RelativeIntent;
-  
+
   // Resolution units
   using MagickLib::ResolutionType;
   using MagickLib::UndefinedResolution;
@@ -733,6 +735,7 @@ namespace Magick
   using MagickLib::ThreadsResource;
   using MagickLib::WidthResource;
   using MagickLib::HeightResource;
+  using MagickLib::ReadResource;
 
   // Virtual pixel methods
   using MagickLib::VirtualPixelMethod;
@@ -741,6 +744,10 @@ namespace Magick
   using MagickLib::EdgeVirtualPixelMethod;
   using MagickLib::MirrorVirtualPixelMethod;
   using MagickLib::TileVirtualPixelMethod;
+
+  // Logging related types
+  using MagickLib::LogMethod;
+  using MagickLib::LogOutputType;
 
 #if defined(MAGICK_IMPLEMENTATION)
   //
@@ -911,6 +918,7 @@ namespace Magick
   using MagickLib::EnhanceImage;
   using MagickLib::EqualizeImage;
   using MagickLib::ExceptionInfo;
+  using MagickLib::ExceptionType;
   using MagickLib::ExecuteModuleProcess;
   using MagickLib::ExportImagePixelArea;
   using MagickLib::ExtentImage;
